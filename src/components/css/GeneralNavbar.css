@@ -35,13 +35,13 @@ body {
 }
 
 .navMenu a:hover {
-  color: #FF8C32;
+  color: #368327;
 }
 
 .navMenu .dot {
   width: 6px;
   height: 6px;
-  background: #FF8C32;
+  background: #368327;
   border-radius: 50%;
   opacity: 0;
   -webkit-transform: translateX(30px);
