@@ -61,7 +61,7 @@ button {
   font-family: inherit;
 }
 button.learn-more {
-  width: 12rem;
+  width: 14rem;
   height: auto;
 }
 button.learn-more .circle {
@@ -119,7 +119,7 @@ button:hover .circle {
   width: 100%;
 }
 button:hover .circle .icon.arrow {
-  background: #353648;
+  background: whitesmoke;
   transform: translate(1rem, 0);
 }
 button:hover .button-text {

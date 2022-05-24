@@ -31,12 +31,12 @@ function Homepage() {
                     </Col>
                     <Col sm={4}>
                         <div style={{ width: '100%', paddingTop: '20%', textAlign: "center" }}>
-                            <Link to="/select_game">
+                            <Link to="/choose_store">
                                 <button className="learn-more">
                                     <span className="circle" aria-hidden="true">
                                         <span className="icon arrow"></span>
                                     </span>
-                                    <span className="button-text">Start</span>
+                                    <span className="button-text">Start Ordering</span>
                                 </button>
                             </Link>
                         </div>

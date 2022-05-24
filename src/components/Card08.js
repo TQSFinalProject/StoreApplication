@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { useNavigate , Link} from "react-router-dom";
 
 const Container = styled.div`
   border-radius: 8px;
@@ -67,6 +68,7 @@ const PreTitle = styled.span`
   color: ${props => props.color};
 `;
 
+
 const Card08 = ({
   preTitle,
   preTitleColor = "white",
@@ -80,7 +82,8 @@ const Card08 = ({
   tagColor = "#1F2126",
   tagBg = "white",
   bgPhoto,
-  bgColor = "#DBE0E6"
+  bgColor = "#DBE0E6",
+  pageToGo,
 }) => (
   <Container bgPhoto={bgPhoto} bgColor={bgColor} overlayColor={overlayColor}>
     {tag && (
@@ -95,9 +98,11 @@ const Card08 = ({
           {title && <Title color={titleColor}>{title}</Title>}
         </span>
         {cta && (
+          <Link to={pageToGo} style={{textDecoration:'none'}}>
           <CTA bgColor={ctaBg} color={ctaColor}>
             <CTAText>{cta}</CTAText>
           </CTA>
+          </Link>
         )}
       </Content>
     )}

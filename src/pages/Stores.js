@@ -12,48 +12,25 @@ import GeneralNavbar from '../components/GeneralNavbar';
 import Title from '../components/Title';
 
 function Stores() {
+    const stores = ["Wine Store 1","Wine Store 2","Wine Store 3","Wine Store 4"]
 
     return (
         <>
             <GeneralNavbar />
             <Title title="List of Stores" subtitle="Get to know our partner stores"/>
             <Container className="storeContainer">
-                <Row className="row justify-content-center">
-                    <Card08
-                        bgPhoto="https://picsum.photos/740/420/?random"
-                        preTitle="November 2017"
-                        tag="Wine"
-                        cta="View more"
-                        title="Wine Store 1"
-                    />
-                </Row>
-                <Row className="row justify-content-center">
-                    <Card08
-                        bgPhoto="https://picsum.photos/740/420/?random"
-                        preTitle="November 2017"
-                        tag="Wine"
-                        cta="View more"
-                        title="Wine Store 2"
-                    />
-                </Row>
-                <Row className="row justify-content-center">
-                    <Card08
-                        bgPhoto="https://picsum.photos/740/420/?random"
-                        preTitle="November 2017"
-                        tag="Wine"
-                        cta="View more"
-                        title="Wine Store 3"
-                    />
-                </Row>
-                <Row className="row justify-content-center">
-                    <Card08
-                        bgPhoto="https://picsum.photos/740/420/?random"
-                        preTitle="November 2017"
-                        tag="Wine"
-                        cta="View more"
-                        title="Wine Store 4"
-                    />
-                </Row>
+                {stores.map((title, idx) => (
+                    <Row key={idx} className="row justify-content-center">
+                        <Card08
+                            bgPhoto="https://picsum.photos/740/420/?random"
+                            preTitle="November 2017"
+                            tag="Wine"
+                            cta="View more"
+                            title={title}
+                            pageToGo={"/store/"+(idx+1)+"/info"}
+                        />
+                    </Row>
+                ))}
             </Container>
         </>);
 }
