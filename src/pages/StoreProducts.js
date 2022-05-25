@@ -8,33 +8,73 @@ import Toast from 'react-bootstrap/Toast'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Button from 'react-bootstrap/Button'
 
+// Material UI
+import { Slider } from '@mui/material';
+import Typography from '@mui/material/Typography';
+
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
 
 // Product Data
 import { products } from "../App"
 
-function dynamicSort(property) {
-  var sortOrder = 1;
-  if (property[0] === "-") {
-      sortOrder = -1;
-      property = property.substr(1);
-  }
-  return function (a, b) {
-      var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-      return result * sortOrder;
-  }
+// FA
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate } from 'react-router-dom';
+
+function valuetextPrice(value) {
+  return `${value}£`;
+}
+
+function valuetextAlcohol(value) {
+  return `${value}%`;
 }
 
 function StoreProducts() {
 
+  let navigate = useNavigate();
   let local_products = [...products]
+  let minPrice = Math.min(...local_products.map(o => o.price))
+  let maxPrice = Math.max(...local_products.map(o => o.price))
+  let marksPrice = [
+    {
+      "value": minPrice,
+      "label": minPrice+"£"
+    },
+    {
+      "value": maxPrice,
+      "label": maxPrice+"£"
+    }
+  ]
 
-  let [orderedProducts, setOrderedProducts] = useState(orderedProducts);
+  let minAlcohol = Math.min(...local_products.map(o => o.alcohol))
+  let maxAlcohol = Math.max(...local_products.map(o => o.alcohol))
+  let marksAlcohol = [
+    {
+      "value": minAlcohol,
+      "label": minAlcohol+"%"
+    },
+    {
+      "value": maxAlcohol,
+      "label": maxAlcohol+"%"
+    }
+  ]
 
-  function productList() {
-    return orderedProducts
+  function redirectCartPage() {
+    navigate('/cart/')
   }
+
+  const [valuePrice,setValuePrice] = React.useState([minPrice,maxPrice]);
+  const [valueAlcohol, setValueAlcohol] = React.useState([minAlcohol,maxAlcohol]);
+
+  const handleChangePrice = (event, newValue) => {
+    setValuePrice(newValue);
+  };
+
+  const handleChangeAlcohol = (event, newValue) => {
+    setValueAlcohol(newValue);
+  };
 
   function checkBoxFoolery() {
 
@@ -52,6 +92,18 @@ function StoreProducts() {
 
   }
 
+  function typeToColor(type) {
+    let colorMap = {
+      "red": "DarkRed",
+      "white": "Khaki",
+      "rose": "LightCoral",
+      "sparkling": "LightBlue",
+      "dry": "YellowGreen"
+    }
+
+    return colorMap[type]
+  }
+
 
   return (
     <>
@@ -67,25 +119,39 @@ function StoreProducts() {
 
             <p><strong>Filters:</strong></p>
 
-            <Dropdown className='filterDropdown'>
-              <Dropdown.Toggle id="dropdown-basic">
-                Price
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item>1-5</Dropdown.Item>
-                <Dropdown.Item>5-1</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <Typography id="input-slider" gutterBottom>
+              Price
+            </Typography>
 
-            <Dropdown className='filterDropdown'>
-              <Dropdown.Toggle id="dropdown-basic">
-                Alcohol
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item>A-Z</Dropdown.Item>
-                <Dropdown.Item>Z-A</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <Slider
+              getAriaLabel={() => 'Temperature range'}
+              value={valuePrice}
+              onChange={handleChangePrice}
+              valueLabelDisplay="auto"
+              getAriaValueText={valuetextPrice}
+              max={maxPrice}
+              min={minPrice}
+              step={0.01}
+              marks={marksPrice}
+              disableSwap
+            />
+
+            <Typography id="input-slider" gutterBottom>
+              Alcohol
+            </Typography>
+
+            <Slider
+              getAriaLabel={() => 'Temperature range'}
+              value={valueAlcohol}
+              onChange={handleChangeAlcohol}
+              valueLabelDisplay="auto"
+              getAriaValueText={valuetextAlcohol}
+              max={maxAlcohol}
+              min={minAlcohol}
+              step={0.5}
+              marks={marksAlcohol}
+              disableSwap
+            />
 
             <div className='checkboxGroup' style={{ verticalAlign: 'middle', marginTop: '3%' }}>
               <p>Wine Type:</p>
@@ -108,24 +174,36 @@ function StoreProducts() {
             </div>
 
           </Col>
-          {/* <Col sm={8}>
+          <Col sm={8}>
             <Row className="d-flex justify-content-center">
-              {staffList().map((callbackfn, idx) => (
-                <Toast key={"key" + staffList()[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
+              {local_products.map((callbackfn, idx) => (
+                <Toast key={"key" + local_products[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
                   <Toast.Header closeButton={false}>
-                    <strong className="me-auto">Employee #{staffList()[idx].id} </strong>
+                    <Container>
+                      <Row>
+                        <Col style={{ display: 'flex', justifyContent: 'left' }}>
+                          <strong className="me-auto">{local_products[idx].name} </strong>
+                        </Col>
+                        <Col style={{ display: 'flex', justifyContent: 'right' }}>
+                          {local_products[idx].types.map((callbackfn, idx2) => (
+                            <span class="badge" style={{ backgroundColor: typeToColor(local_products[idx].types[idx2]), margin: "1%" }}>{local_products[idx].types[idx2]}</span>
+                          ))}
+                        </Col>
+                      </Row>
+                    </Container>
                   </Toast.Header>
                   <Toast.Body>
                     <Container>
                       <Row>
                         <Col className='align-self-center col-xs-1' align='center'>
-                          {staffList()[idx].name}<br />
-                          <StarRating rating={staffList()[idx].rating} />
+                          {"Alcohol: " + local_products[idx].alcohol + "%"}<br />
+                          {"Price: " + local_products[idx].alcohol + "£"}
+
                         </Col>
                         <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                          <img src={staffList()[idx].img} className="rounded mr-2" alt="Employee Pic" style={{ height: '50px' }}></img>                                                </Col>
+                          <img src={local_products[idx].img} className="rounded mr-2" alt="Product Pic" style={{ height: '50px' }}></img>                                                </Col>
                         <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                          <Button onClick={() => { redirectUserPage(staffList()[idx].id) }}><i className="fa fa-user"></i></Button>
+                          <Button onClick={() => { }}><FontAwesomeIcon icon={faPlus} /></Button>
                         </Col>
                       </Row>
                     </Container>
@@ -133,10 +211,12 @@ function StoreProducts() {
                 </Toast>
               ))}
             </Row>
-            <Row className="d-flex justify-content-center">
-              <Pagination pageNumber={Math.ceil(local_staff.length / 6)} parentCallback={handleCallback} />
+            <Row>
+              <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
+                <Button size="lg" onClick={() => { redirectCartPage() }}>Go To Cart</Button>
+              </Col>
             </Row>
-          </Col> */}
+          </Col>
         </Row>
       </Container>
     </>
