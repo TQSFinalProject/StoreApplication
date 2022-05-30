@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "order")
+@Table(name = "wines")
 public class Wine {
     @Id // The ID will be auto generated
     @GeneratedValue(strategy = GenerationType.AUTO)

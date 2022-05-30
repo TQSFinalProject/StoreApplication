@@ -4,44 +4,38 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "orderInstance") 
+@Table(name = "orderInstances") 
 public class OrderInstance {
     @Id //The ID will be auto generated
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order")
+    @JoinColumn(name = "orders")
     private Order order;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer")
     private Customer customer;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "wine_stock_mapping", 
-      joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
-      inverseJoinColumns = {@JoinColumn(name= "wine_id", referencedColumnName = "id")})
-    @MapKey(name = "name")
-    private Map<Wine, Long> cart;
+    @ElementCollection
+    private Map<Wine, Integer> cart;
 
 
     public OrderInstance() {
     }
 
-    public OrderInstance(long id, Order order, Customer customer, Map<Wine,Long> cart) {
+    public OrderInstance(long id, Order order, Customer customer, Map<Wine,Integer> cart) {
         this.id = id;
         this.order = order;
         this.customer = customer;
@@ -72,11 +66,11 @@ public class OrderInstance {
         this.customer = customer;
     }
 
-    public Map<Wine,Long> getCart() {
+    public Map<Wine,Integer> getCart() {
         return this.cart;
     }
 
-    public void setCart(Map<Wine,Long> cart) {
+    public void setCart(Map<Wine,Integer> cart) {
         this.cart = cart;
     }
 
