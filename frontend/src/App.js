@@ -14,6 +14,7 @@ import Account from './pages/Account';
 import ChooseStore from './pages/ChooseStore';
 import StoreInfo from './pages/StoreInfo';
 import StoreProducts from './pages/StoreProducts';
+import Login from './pages/Login';
 
 export let staff = [
   { id: 1, name: "Afonso Campos", rating: 5, img: 'https://cdn-icons-png.flaticon.com/512/147/147144.png', time: 10, workZone: 'A' },
@@ -51,6 +52,7 @@ function App() {
         <Route path="/choose_store" element={<ChooseStore />}></Route>
         <Route path="/store/:id/products" element={<StoreProducts />}></Route>
         <Route path="/store/:id/info" element={<StoreInfo />}></Route>
+        <Route path="/login" element={<Login />}></Route>
       </Routes>
     </BrowserRouter>
   );
