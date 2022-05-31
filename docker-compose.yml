@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+
+  mysql_cdv:
+      image: mysql/mysql-server:5.7
+      container_name: CDV_DB
+      command: mysqld 
+      volumes:
+        - mysql-cdv:/volumes/CDV_DB
+      ports:
+        - "33060:3306"
+      hostname: mysql
+      environment:
+        - MYSQL_ROOT_PASSWORD=chateauduvin
+        - MYSQL_USER=cdv
+        - MYSQL_DATABASE=cdv
+        - MYSQL_PASSWORD=chateauduvin2
+
+  cdv:
+    depends_on:
+      - mysql_cdv
+    build: ./backend
+    container_name: CDV_API
+    restart: unless-stopped
+    image: cdv-api
+    ports:
+      - 8080:8080
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysql:3306/cdv
+      - spring.datasource.username=cdv
+      - spring.datasource.password=chateauduvin2
+      - spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
+      - spring.jpa.hibernate.ddl-auto=update
+
+volumes:
+  mysql-cdv:
+    driver: local
