@@ -21,9 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class StoreController {
-
     @Autowired
     private StoreService storeServ;
+
+    // Base Endpoints
 
     @GetMapping("/orders")
     public ResponseEntity<List<Order>> getOrders() {
