@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
-import ModelViewer from '../components/ModelViewer';
 
 // Bootstrap
 import Container from 'react-bootstrap/Container'
