@@ -1,8 +1,10 @@
 package com.tqs.chateauduvin.model;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,6 +30,8 @@ public class Customer {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @ElementCollection
+    private Map<Wine, Integer> cart;
 
     public Customer() {
     }
