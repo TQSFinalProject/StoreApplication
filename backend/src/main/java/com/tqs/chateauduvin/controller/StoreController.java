@@ -5,7 +5,6 @@ import java.util.List;
 import com.tqs.chateauduvin.model.Order;
 import com.tqs.chateauduvin.model.Wine;
 import com.tqs.chateauduvin.model.OrderInstance;
-import com.tqs.chateauduvin.model.Customer;
 import com.tqs.chateauduvin.service.StoreService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,15 +53,5 @@ public class StoreController {
     @PostMapping("/orderInstances")
     public OrderInstance createOrderInstance(@RequestBody OrderInstance orderInstance) {
         return storeServ.saveOrderInstance(orderInstance);
-    }
-
-    @GetMapping("/customers")
-    public ResponseEntity<List<Customer>> getCustomers() {
-        return ResponseEntity.ok().body(storeServ.getCustomers());
-    }
-
-    @PostMapping("/customers")
-    public Customer createCustomer(@RequestBody Customer customer) {
-        return storeServ.saveCustomer(customer);
     }
 }
