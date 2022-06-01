@@ -13,9 +13,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,8 +50,23 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public Customer savecCustomer(@RequestBody Customer cust){
-        return storeServ.saveCustomer(cust);
+    public ResponseEntity<String> saveCustomer(@RequestBody Customer cust){
+        Boolean bool = storeServ.getCustomer(cust.getUsername()) != null;
+        if(bool) return ResponseEntity.status(409).body("Username already in use.");
+        else {
+            storeServ.saveCustomer(cust);
+            return ResponseEntity.status(200).body("User registered successfully.");
+        }
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<String> isTokenValid(@RequestHeader("authorization") String auth){
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        UserDetails details = storeServ.loadUserByUsername(username);
+        Boolean bool = jwtTokenUtil.validateToken(token, details);
+        if(bool) return ResponseEntity.status(200).body("Token is still valid.");
+        else return ResponseEntity.status(410).body("Token has expired.");
     }
 
     // In case we need role authorization
