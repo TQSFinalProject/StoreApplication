@@ -50,10 +50,15 @@ function validateUsername(username) {
 }
 
 function validateEmail(email) {
-    if (/\S+@\S+\.\S+/.test(email)) {
-        return true
-    }
-    return false
+    var atSymbol = email.indexOf("@");
+    if (atSymbol < 1) return false;
+
+    var dot = email.indexOf(".");
+    if (dot <= atSymbol + 2) return false;
+
+    if (dot === email.length - 1) return false;
+
+    return true;
 }
 
 function validatePassword(password) {
