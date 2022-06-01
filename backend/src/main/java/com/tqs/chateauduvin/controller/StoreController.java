@@ -1,7 +1,9 @@
 package com.tqs.chateauduvin.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import com.tqs.chateauduvin.config.TokenProvider;
 import com.tqs.chateauduvin.model.Order;
 import com.tqs.chateauduvin.model.Wine;
 import com.tqs.chateauduvin.model.OrderInstance;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreController {
     @Autowired
     private StoreService storeServ;
+
+    @Autowired
+    private TokenProvider jwtTokenUtil;
 
     // Base Endpoints
 
@@ -45,13 +51,23 @@ public class StoreController {
         return storeServ.saveWine(wine);
     }
 
-    @GetMapping("/orderInstances")
+    @GetMapping("/orderinst")
     public ResponseEntity<List<OrderInstance>> getOrderInstances() {
         return ResponseEntity.ok().body(storeServ.getOrderInstances());
     }
 
-    @PostMapping("/orderInstances")
+    @PostMapping("/orderinst")
     public OrderInstance createOrderInstance(@RequestBody OrderInstance orderInstance) {
         return storeServ.saveOrderInstance(orderInstance);
     }
+
+    // Authentication Example
+    // @GetMapping("/orderinst")
+    // public ResponseEntity<List<OrderInstance>> getOrderInstances(@RequestHeader("authorization") String auth) {
+    //     String token = auth.split(" ")[1];
+    //     if(jwtTokenUtil.getUsernameFromToken(token).equals("admin"))
+    //         return ResponseEntity.ok().body(storeServ.getOrderInstances());
+    //     else
+    //         return ResponseEntity.status(401).build();
+    // }
 }
