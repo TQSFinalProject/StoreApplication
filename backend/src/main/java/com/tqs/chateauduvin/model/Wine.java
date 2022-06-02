@@ -31,13 +31,13 @@ public class Wine {
     private Double price;
 
     @Column(name = "stock", nullable = false)
-    private Long stock;
+    private Integer stock;
 
 
     public Wine() {
     }
 
-    public Wine(long id, String name, Double alcohol, List<String> types, Double price, Long stock) {
+    public Wine(long id, String name, Double alcohol, List<String> types, Double price, Integer stock) {
         this.id = id;
         this.name = name;
         this.alcohol = alcohol;
@@ -86,11 +86,11 @@ public class Wine {
         this.price = price;
     }
 
-    public Long getStock() {
+    public Integer getStock() {
         return this.stock;
     }
 
-    public void setStock(Long stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 

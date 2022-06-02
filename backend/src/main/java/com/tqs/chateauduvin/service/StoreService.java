@@ -3,8 +3,11 @@ package com.tqs.chateauduvin.service;
 import java.util.ArrayList;
 // import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.NoSuchElementException;
 // import java.util.Set;
-
+import java.util.Optional;
 
 import com.tqs.chateauduvin.model.Order;
 import com.tqs.chateauduvin.model.Wine;
@@ -60,6 +63,10 @@ public class StoreService implements UserDetailsService {
         return wineRep.findAll();
     }
 
+    public Optional<Wine> getWineById(Long id) {
+        return wineRep.findById(id);
+    }
+
     public Wine saveWine(Wine wine) {
         return wineRep.save(wine);
     }
@@ -76,8 +83,12 @@ public class StoreService implements UserDetailsService {
         return customerRep.findAll();
     }
 
-    public Customer getCustomer(String username) {
+    public Customer getCustomerByUsername(String username) {
         return customerRep.findByUsername(username);
+    }
+
+    public Optional<Customer> getCustomerById(Long id) {
+        return customerRep.findById(id);
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -111,6 +122,27 @@ public class StoreService implements UserDetailsService {
         // roleSet.add(role);
 
         return customerRep.save(cust);
+    }
+
+    // Cart Logic
+
+    public void addWineToCart(Customer cust, Long wineid, Integer quantity) {
+        Wine wine;
+        try {
+            wine = getWineById(wineid).get();
+        } catch(NoSuchElementException e) {
+            throw new NoSuchElementException();
+        }
+
+        Map<Wine,Integer> cart = cust.getCart();
+        
+        Integer overall = (cart.keySet().contains(wine)) ? (cart.get(wine)+quantity) : quantity;
+
+        if(wine.getStock() < overall) throw new MissingResourceException(null, null, null);
+        else cart.put(wine, overall);
+
+        cust.setCart(cart);
+        customerRep.save(cust);
     }
 
 }

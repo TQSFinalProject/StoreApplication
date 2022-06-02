@@ -84,6 +84,14 @@ public class Customer {
         this.password = password;
     }
 
+    public Map<Wine,Integer> getCart() {
+        return this.cart;
+    }
+
+    public void setCart(Map<Wine,Integer> cart) {
+        this.cart = cart;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
