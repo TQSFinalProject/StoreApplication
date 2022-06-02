@@ -59,37 +59,29 @@ body {
 }
 
 .navMenu a:nth-child(2):hover ~ .dot {
-  -webkit-transform: translateX(130px);
-  transform: translateX(130px);
+  -webkit-transform: translateX(135px);
+  transform: translateX(135px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
 .navMenu a:nth-child(3):hover ~ .dot {
-  -webkit-transform: translateX(230px);
-  transform: translateX(230px);
+  -webkit-transform: translateX(260px);
+  transform: translateX(260px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
 .navMenu a:nth-child(4):hover ~ .dot {
-  -webkit-transform: translateX(335px);
-  transform: translateX(335px);
+  -webkit-transform: translateX(345px);
+  transform: translateX(345px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;
 }
 
-.navMenu a:nth-child(5):hover ~ .dot {
-  -webkit-transform: translateX(455px);
-  transform: translateX(455px);
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  opacity: 1;
-}
-
-.navMenu a:nth-child(5) {
+.navMenu a:nth-child(4) {
   margin-left: 1%;
 }
