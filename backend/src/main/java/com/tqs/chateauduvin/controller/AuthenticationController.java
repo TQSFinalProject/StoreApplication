@@ -59,16 +59,6 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/validate")
-    public ResponseEntity<String> isTokenValid(@RequestHeader("authorization") String auth){
-        String token = auth.split(" ")[1];
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-        UserDetails details = storeServ.loadUserByUsername(username);
-        Boolean bool = jwtTokenUtil.validateToken(token, details);
-        if(bool) return ResponseEntity.status(200).body("Token is still valid.");
-        else return ResponseEntity.status(410).body("Token has expired.");
-    }
-
     // In case we need role authorization
     // @PreAuthorize("hasRole('USER')")
     // @RequestMapping(value="/userping", method = RequestMethod.GET)
