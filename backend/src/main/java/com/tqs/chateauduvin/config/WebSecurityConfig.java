@@ -1,5 +1,8 @@
 package com.tqs.chateauduvin.config;
 
+// Code adpated from https://github.com/akhileshmalini/spring-security-role-jwt
+// All credits go to the author akhianand
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,56 +15,54 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.annotation.Resource;
+
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Resource(name = "userService")
+    private UserDetailsService userDetailsService;
 
-	@Autowired
-	private UserDetailsService jwtUserDetailsService;
+    @Autowired
+    private UnauthorizedEntryPoint unauthorizedEntryPoint;
 
-	@Autowired
-	private JWTRequestFilter jwtRequestFilter;
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
+    }
 
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		// configure AuthenticationManager so that it knows from where to load
-		// user for matching credentials
-		// Use BCryptPasswordEncoder
-		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
-	}
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/authenticate", "/register", "/validate").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+        http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+    }
 
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
+    @Bean
+    public BCryptPasswordEncoder encoder(){
+        return new BCryptPasswordEncoder();
+    }
 
-	@Override
-	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		// We don't need CSRF for this example
-		httpSecurity.csrf().disable()
-				// dont authenticate this particular request
-				.authorizeRequests().antMatchers("/authenticate", "/register").permitAll().
-				// all other requests need to be authenticated
-				anyRequest().authenticated().and().
-				// make sure we use stateless session; session won't be used to
-				// store user's state.
-				exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
-		// Add a filter to validate the tokens with every request
-		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-	}
+    @Bean
+    public JwtAuthenticationFilter authenticationTokenFilterBean() throws Exception {
+        return new JwtAuthenticationFilter();
+    }
+
 }
