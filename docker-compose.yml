@@ -9,7 +9,7 @@ services:
       volumes:
         - mysql-cdv:/volumes/CDV_DB
       ports:
-        - "33060:3306"
+        - "33061:3306"
       hostname: mysql
       environment:
         - MYSQL_ROOT_PASSWORD=chateauduvin
@@ -32,6 +32,15 @@ services:
       - spring.datasource.password=chateauduvin2
       - spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
       - spring.jpa.hibernate.ddl-auto=update
+
+  cdv_frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    depends_on: 
+      - cdv
 
 volumes:
   mysql-cdv:
