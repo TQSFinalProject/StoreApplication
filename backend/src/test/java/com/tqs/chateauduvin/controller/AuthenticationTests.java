@@ -3,7 +3,6 @@ package com.tqs.chateauduvin.controller;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
 import com.tqs.chateauduvin.ChateauduvinApplication;
 import com.tqs.chateauduvin.JsonUtils;
@@ -21,22 +19,14 @@ import com.tqs.chateauduvin.repository.CustomerRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNotNull;
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import org.springframework.test.web.servlet.result.JsonPathResultMatchers;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
-import org.json.JSONObject;  
-import org.json.JSONArray;  
+import org.json.JSONObject;   
 
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK, classes = ChateauduvinApplication.class)
 @AutoConfigureMockMvc
@@ -77,7 +67,9 @@ public class AuthenticationTests {
         // Test given token on endpoint requiring auth
         JSONObject tokenJSON = new JSONObject(result.getResponse().getContentAsString());
         String token = tokenJSON.getString("token");
-        // TODO
+        mvc.perform(get("/myprofile").header("Authorization", "Bearer "+token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.username", is("BobPancakes")));
     }
 
     @Test
