@@ -51,7 +51,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<String> saveCustomer(@RequestBody Customer cust){
-        Boolean bool = storeServ.getCustomer(cust.getUsername()) != null;
+        Boolean bool = storeServ.getCustomerByUsername(cust.getUsername()) != null;
         if(bool) return ResponseEntity.status(409).body("Username already in use.");
         else {
             storeServ.saveCustomer(cust);
