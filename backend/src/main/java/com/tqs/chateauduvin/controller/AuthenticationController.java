@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,13 +49,22 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> saveCustomer(@RequestBody Customer cust){
+    public ResponseEntity<String> saveCustomer(@RequestBody Customer cust) {
         Boolean bool = storeServ.getCustomer(cust.getUsername()) != null;
         if(bool) return ResponseEntity.status(409).body("Username already in use.");
         else {
             storeServ.saveCustomer(cust);
             return ResponseEntity.status(200).body("User registered successfully.");
         }
+    }
+
+    @GetMapping("/myprofile")
+    public ResponseEntity<Customer> getCustomerDetails(@RequestHeader("authorization") String auth) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Customer cust = storeServ.getCustomer(username);
+        cust.setPassword(null);
+        return ResponseEntity.ok().body(cust);
     }
 
     // In case we need role authorization
