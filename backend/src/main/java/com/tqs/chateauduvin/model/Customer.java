@@ -1,5 +1,6 @@
 package com.tqs.chateauduvin.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class Customer {
     private String name;
 
     @Column(name = "phone")
-    private Long phone;
+    private String phone;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
@@ -36,12 +37,12 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(long id, String name, Long phone, String username, String password) {
-        this.id = id;
+    public Customer(String name, String phone, String username, String password) {
         this.name = name;
         this.phone = phone;
         this.username = username;
         this.password = password;
+        this.cart = new HashMap<>();
     }
 
     public long getId() {
@@ -60,11 +61,11 @@ public class Customer {
         this.name = name;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

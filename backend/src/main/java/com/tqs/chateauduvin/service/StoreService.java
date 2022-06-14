@@ -145,4 +145,24 @@ public class StoreService implements UserDetailsService {
         customerRep.save(cust);
     }
 
+    public void deleteWineFromCart(Customer customer, Long wineid, Integer quantity) {
+        Wine wine;
+        try {
+            wine = getWineById(wineid).get();
+        } catch(NoSuchElementException e) {
+            throw new NoSuchElementException();
+        }
+
+        Map<Wine,Integer> cart = customer.getCart(); 
+
+        // Is wine in user cart
+        if(cart.containsKey(wine)) {
+            cart.put(wine, cart.get(wine)-quantity);
+            if(cart.get(wine)<0) cart.put(wine, 0);
+            customer.setCart(cart);
+            customerRep.save(customer);
+        }
+        else throw new NoSuchElementException();
+    }
+
 }

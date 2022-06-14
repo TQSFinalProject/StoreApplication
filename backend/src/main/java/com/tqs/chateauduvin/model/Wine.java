@@ -37,8 +37,7 @@ public class Wine {
     public Wine() {
     }
 
-    public Wine(long id, String name, Double alcohol, List<String> types, Double price, Integer stock) {
-        this.id = id;
+    public Wine(String name, Double alcohol, List<String> types, Double price, Integer stock) {
         this.name = name;
         this.alcohol = alcohol;
         this.types = types;
