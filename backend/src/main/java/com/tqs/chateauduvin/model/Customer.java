@@ -1,6 +1,5 @@
 package com.tqs.chateauduvin.model;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -37,12 +36,12 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(String name, String phone, String username, String password) {
+    public Customer(String name, String phone, String username, String password, Map<Wine,Integer> cart) {
         this.name = name;
         this.phone = phone;
         this.username = username;
         this.password = password;
-        this.cart = new HashMap<>();
+        this.cart = cart;
     }
 
     public long getId() {
@@ -101,12 +100,12 @@ public class Customer {
             return false;
         }
         Customer customer = (Customer) o;
-        return id == customer.id && Objects.equals(name, customer.name) && Objects.equals(phone, customer.phone) && Objects.equals(username, customer.username) && Objects.equals(password, customer.password);
+        return id == customer.id && Objects.equals(name, customer.name) && Objects.equals(phone, customer.phone) && Objects.equals(username, customer.username) && Objects.equals(password, customer.password) && Objects.equals(cart, customer.cart);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, phone, username, password);
+        return Objects.hash(id, name, phone, username, password, cart);
     }
 
     @Override
@@ -117,6 +116,8 @@ public class Customer {
             ", phone='" + getPhone() + "'" +
             ", username='" + getUsername() + "'" +
             ", password='" + getPassword() + "'" +
+            ", cart='" + getCart() + "'" +
             "}";
     }
+    
 }
