@@ -127,6 +127,8 @@ public class StoreService implements UserDetailsService {
     // Cart Logic
 
     public void addWineToCart(Customer cust, Long wineid, Integer quantity) {
+        System.out.println("AAAAAAAA");
+        System.out.println(wineid);
         Wine wine;
         try {
             wine = getWineById(wineid).get();
