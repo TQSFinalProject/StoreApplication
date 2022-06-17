@@ -14,8 +14,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -60,7 +62,7 @@ public class AuthenticationController {
     public ResponseEntity<Customer> getCustomerDetails(@RequestHeader("authorization") String auth) {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
-        Customer cust = storeServ.getCustomer(username);
+        Customer cust = storeServ.getCustomerByUsername(username);
         cust.setPassword(null);
         return ResponseEntity.ok().body(cust);
     }
