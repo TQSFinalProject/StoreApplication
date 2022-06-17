@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.tqs.chateauduvin.ChateauduvinApplication;
 import com.tqs.chateauduvin.JsonUtils;
+import com.tqs.chateauduvin.dto.CustomerCreationDTO;
 import com.tqs.chateauduvin.dto.LogInRequestDTO;
 import com.tqs.chateauduvin.model.Customer;
 import com.tqs.chateauduvin.repository.CustomerRepository;
@@ -45,7 +46,7 @@ public class AuthenticationTests {
 
     @Test
     public void whenRegister_thenSuccessfullAuth() throws IOException, Exception {
-        Customer cust = new Customer("Bob", "919191919", "BobPancakes", "pancake123");
+        CustomerCreationDTO cust = new CustomerCreationDTO("Bob", "919191919", "BobPancakes", "pancake123");
 
         mvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust)))
         .andExpect(status().isOk());
@@ -83,8 +84,8 @@ public class AuthenticationTests {
 
     @Test
     public void whenRegisterWithDuplicatedUsername_thenUnsuccessfulRegister() throws IOException, Exception {
-        Customer cust1 = new Customer("Bob", "919191919", "BobPancakes", "pancake123");
-        Customer cust2 = new Customer("Rita","929292929","BobPancakes","rita");
+        CustomerCreationDTO cust1 = new CustomerCreationDTO("Bob", "919191919", "BobPancakes", "pancake123");
+        CustomerCreationDTO cust2 = new CustomerCreationDTO("Rita","929292929","BobPancakes","rita");
 
         mvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust1)))
         .andExpect(status().isOk());
