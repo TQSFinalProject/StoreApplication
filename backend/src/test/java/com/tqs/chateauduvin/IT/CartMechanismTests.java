@@ -18,9 +18,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.tqs.chateauduvin.ChateauduvinApplication;
 import com.tqs.chateauduvin.JsonUtils;
-
+import com.tqs.chateauduvin.dto.LogInRequestDTO;
 import com.tqs.chateauduvin.model.Customer;
-import com.tqs.chateauduvin.model.LogInReq;
 import com.tqs.chateauduvin.model.Wine;
 import com.tqs.chateauduvin.repository.CustomerRepository;
 import com.tqs.chateauduvin.repository.WineRepository;
@@ -77,7 +76,7 @@ public class CartMechanismTests {
 
         Customer cust1 = new Customer("Bob", "919191919", "BobPancakes", "bobby99");
         storeServ.saveCustomer(cust1);
-        LogInReq req1 = new LogInReq("BobPancakes", "bobby99");
+        LogInRequestDTO req1 = new LogInRequestDTO("BobPancakes", "bobby99");
         MvcResult result1 = mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req1)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").exists())

@@ -125,12 +125,13 @@ public class StoreService implements UserDetailsService {
     // Cart Logic
 
     public void addWineToCart(Customer cust, Long wineid, Integer quantity) {
+        Optional<Wine> optWine = getWineById(wineid);
         Wine wine;
-        try {
-            wine = getWineById(wineid).get();
-        } catch(NoSuchElementException e) {
+        if(optWine.isPresent())
+            wine = optWine.get();
+        else
             throw new NoSuchElementException();
-        }
+
 
         Map<Long,Integer> cart = cust.getCart();
         
@@ -144,12 +145,12 @@ public class StoreService implements UserDetailsService {
     }
 
     public void deleteWineFromCart(Customer customer, Long wineid, Integer quantity) {
+        Optional<Wine> optWine = getWineById(wineid);
         Wine wine;
-        try {
-            wine = getWineById(wineid).get();
-        } catch(NoSuchElementException e) {
+        if(optWine.isPresent())
+            wine = optWine.get();
+        else
             throw new NoSuchElementException();
-        }
 
         Map<Long, Integer> cart = customer.getCart(); 
 
