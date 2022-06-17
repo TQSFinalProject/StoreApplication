@@ -7,6 +7,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,8 +32,9 @@ public class Customer {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ElementCollection
-    private Map<Wine, Integer> cart;
+    @Column(name = "cart", nullable = false)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Map<Long, Integer> cart;
 
     public Customer() {
     }
@@ -83,6 +85,14 @@ public class Customer {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Map<Long,Integer> getCart() {
+        return this.cart;
+    }
+
+    public void setCart(Map<Long, Integer> cart) {
+        this.cart = cart;
     }
 
     @Override

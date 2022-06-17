@@ -14,10 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,8 +47,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> saveCustomer(@RequestBody Customer cust) {
-        Boolean bool = storeServ.getCustomer(cust.getUsername()) != null;
+    public ResponseEntity<String> saveCustomer(@RequestBody Customer cust){
+        Boolean bool = storeServ.getCustomerByUsername(cust.getUsername()) != null;
         if(bool) return ResponseEntity.status(409).body("Username already in use.");
         else {
             storeServ.saveCustomer(cust);
