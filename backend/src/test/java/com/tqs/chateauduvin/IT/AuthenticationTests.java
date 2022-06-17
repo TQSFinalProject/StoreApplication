@@ -45,7 +45,7 @@ public class AuthenticationTests {
     }
 
     @Test
-    public void whenRegister_thenSuccessfullAuth() throws IOException, Exception {
+    void whenRegister_thenSuccessfullAuth() throws IOException, Exception {
         CustomerCreationDTO cust = new CustomerCreationDTO("Bob", "919191919", "BobPancakes", "pancake123");
 
         mvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust)))
@@ -74,7 +74,7 @@ public class AuthenticationTests {
     }
 
     @Test
-    public void whenAuthenticateWithNoCreds_thenUnsuccessfulAuth() throws IOException, Exception {
+    void whenAuthenticateWithNoCreds_thenUnsuccessfulAuth() throws IOException, Exception {
         LogInRequestDTO unregisteredCredentials = new LogInRequestDTO("not", "registered");
 
         mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(unregisteredCredentials)))
@@ -83,7 +83,7 @@ public class AuthenticationTests {
     }
 
     @Test
-    public void whenRegisterWithDuplicatedUsername_thenUnsuccessfulRegister() throws IOException, Exception {
+    void whenRegisterWithDuplicatedUsername_thenUnsuccessfulRegister() throws IOException, Exception {
         CustomerCreationDTO cust1 = new CustomerCreationDTO("Bob", "919191919", "BobPancakes", "pancake123");
         CustomerCreationDTO cust2 = new CustomerCreationDTO("Rita","929292929","BobPancakes","rita");
 

@@ -1,6 +1,5 @@
 package com.tqs.chateauduvin.controller;
 
-import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
@@ -9,9 +8,7 @@ import java.util.Optional;
 import com.tqs.chateauduvin.config.TokenProvider;
 import com.tqs.chateauduvin.dto.WineDTO;
 import com.tqs.chateauduvin.model.Customer;
-import com.tqs.chateauduvin.model.Order;
 import com.tqs.chateauduvin.model.Wine;
-import com.tqs.chateauduvin.model.OrderInstance;
 import com.tqs.chateauduvin.service.StoreService;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,5 @@
 package com.tqs.chateauduvin.dto;
 
-import java.util.Objects;
-
 public class LogInRequestDTO {
     private String username;
     private String password;

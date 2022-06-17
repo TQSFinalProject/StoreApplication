@@ -1,8 +1,5 @@
 package com.tqs.chateauduvin.dto;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.tqs.chateauduvin.model.Wine;
 
 public class WineDTO {
@@ -14,6 +11,10 @@ public class WineDTO {
 
     public Wine toWineEntity() {
         return new Wine(name, alcohol, types, price, stock);
+    }
+
+    public static WineDTO fromWineEntity(Wine wine) {
+        return new WineDTO(wine.getName(), wine.getAlcohol(), wine.getTypes(), wine.getPrice(), wine.getStock());
     }
 
     public WineDTO() {

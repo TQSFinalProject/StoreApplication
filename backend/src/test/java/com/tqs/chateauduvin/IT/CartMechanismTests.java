@@ -66,7 +66,7 @@ public class CartMechanismTests {
     Wine w2;
 
     @BeforeAll
-    public void setUp() throws IOException, Exception {
+    void setUp() throws IOException, Exception {
         w1 = new Wine("w1", 12.0, "dry;rose", 12.99, 12);
         w2 = new Wine("w2", 12.0, "dry;white", 12.99, 3);
         wineRepository.save(w1);
@@ -82,7 +82,7 @@ public class CartMechanismTests {
 
     @Test
     @Order(1) 
-    public void givenProducts_whenUserAddToCart_isInCart() throws Exception {   
+    void givenProducts_whenUserAddToCart_isInCart() throws Exception {   
         System.out.println(wineRepository.findAll());
         mvc.perform(put("/api/cart/"+w1.getId()+"?quantity=5").header("Authorization", "Bearer "+token1))
         .andExpect(status().isOk());
@@ -97,14 +97,14 @@ public class CartMechanismTests {
 
     @Test
     @Order(2) 
-    public void givenProducts_whenNoStock_CantAdd() throws Exception {
+    void givenProducts_whenNoStock_CantAdd() throws Exception {
         mvc.perform(put("/api/cart/"+w2.getId()+"?quantity=5").header("Authorization", "Bearer "+token1))
         .andExpect(status().is(406));
     }
 
     @Test
     @Order(3) 
-    public void givenUser_whenDeleteWineFromCart_thenCartCountReduces() throws Exception {
+    void givenUser_whenDeleteWineFromCart_thenCartCountReduces() throws Exception {
         mvc.perform(delete("/api/cart/"+w1.getId()+"?quantity=2").header("Authorization", "Bearer "+token1))
         .andExpect(status().isOk());
 
@@ -115,7 +115,7 @@ public class CartMechanismTests {
 
     @Test
     @Order(4) 
-    public void givenUser_whenExcessDelete_thenNoWineInCart() throws Exception {
+    void givenUser_whenExcessDelete_thenNoWineInCart() throws Exception {
         mvc.perform(delete("/api/cart/"+w1.getId()+"?quantity=100").header("Authorization", "Bearer "+token1))
         .andExpect(status().isOk());
 
@@ -126,7 +126,7 @@ public class CartMechanismTests {
 
     @Test
     @Order(5)
-    public void addingOrDeletingWineThatDoesntExist() throws Exception {
+    void addingOrDeletingWineThatDoesntExist() throws Exception {
         mvc.perform(delete("/api/cart/1234?quantity=100").header("Authorization", "Bearer "+token1))
         .andExpect(status().isNotFound());
 

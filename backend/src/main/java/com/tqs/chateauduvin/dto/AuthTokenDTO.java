@@ -1,7 +1,5 @@
 package com.tqs.chateauduvin.dto;
 
-import java.util.Objects;
-
 public class AuthTokenDTO {
     private String token;
 
