@@ -25,8 +25,8 @@ public class Wine {
     @Column(name = "alcohol", nullable = false)
     private Double alcohol;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> types;
+    @Column(name = "types", nullable = false)
+    private String types;
 
     @Column(name = "price", nullable = false)
     private Double price;
@@ -38,7 +38,7 @@ public class Wine {
     public Wine() {
     }
 
-    public Wine(String name, Double alcohol, List<String> types, Double price, Integer stock) {
+    public Wine(String name, Double alcohol, String types, Double price, Integer stock) {
         this.name = name;
         this.alcohol = alcohol;
         this.types = types;
@@ -70,11 +70,11 @@ public class Wine {
         this.alcohol = alcohol;
     }
 
-    public List<String> getTypes() {
+    public String getTypes() {
         return this.types;
     }
 
-    public void setTypes(List<String> types) {
+    public void setTypes(String types) {
         this.types = types;
     }
 

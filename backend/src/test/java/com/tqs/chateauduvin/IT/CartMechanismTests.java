@@ -128,4 +128,14 @@ public class CartMechanismTests {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.1").doesNotExist());
     }
+
+    @Test
+    @Order(5)
+    public void addingOrDeletingWineThatDoesntExist() throws Exception {
+        mvc.perform(delete("/api/cart/1234?quantity=100").header("Authorization", "Bearer "+token1))
+        .andExpect(status().isNotFound());
+
+        mvc.perform(put("/api/cart/1234?quantity=5").header("Authorization", "Bearer "+token1))
+        .andExpect(status().isNotFound());
+    }
 }

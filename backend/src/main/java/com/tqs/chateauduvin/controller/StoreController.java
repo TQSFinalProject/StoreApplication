@@ -96,19 +96,16 @@ public class StoreController {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Customer customer = storeServ.getCustomerByUsername(username);
-        if(username.equals(customer.getUsername())) {
-            if(quantity == null) quantity = 1;
-            try {
-                storeServ.addWineToCart(customer, wineid, quantity);
-                return ResponseEntity.ok().build();
-            } catch(NoSuchElementException e) {
-                return ResponseEntity.status(404).body("Wine not found.");
-            } catch(MissingResourceException e) {
-                return ResponseEntity.status(406).body("Not enough stock.");
-            }
+        if(quantity == null) quantity = 1;
+        try {
+            storeServ.addWineToCart(customer, wineid, quantity);
+            return ResponseEntity.ok().build();
+        } catch(NoSuchElementException e) {
+            return ResponseEntity.status(404).body("Wine not found.");
+        } catch(MissingResourceException e) {
+            return ResponseEntity.status(406).body("Not enough stock.");
         }
-        else
-            return ResponseEntity.status(403).build();
+
     }
 
     @DeleteMapping("/cart/{wineid}")
@@ -116,17 +113,13 @@ public class StoreController {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Customer customer = storeServ.getCustomerByUsername(username);
-        if(username.equals(customer.getUsername())) {
-            if(quantity == null) quantity = 1;
-            try {
-                storeServ.deleteWineFromCart(customer, wineid, quantity);
-                return ResponseEntity.ok().build();
-            } catch(NoSuchElementException e) {
-                return ResponseEntity.status(404).body("Wine not found.");
-            }
+        if(quantity == null) quantity = 1;
+        try {
+            storeServ.deleteWineFromCart(customer, wineid, quantity);
+            return ResponseEntity.ok().build();
+        } catch(NoSuchElementException e) {
+            return ResponseEntity.status(404).body("Wine not found.");
         }
-        else
-            return ResponseEntity.status(403).build();
     }
 
     @GetMapping("/cart")

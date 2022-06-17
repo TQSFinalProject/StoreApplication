@@ -8,7 +8,7 @@ import com.tqs.chateauduvin.model.Wine;
 public class WineDTO {
     private String name;
     private Double alcohol;
-    private List<String> types;
+    private String types;
     private Double price;
     private Integer stock;
 
@@ -19,7 +19,7 @@ public class WineDTO {
     public WineDTO() {
     }
 
-    public WineDTO(String name, Double alcohol, List<String> types, Double price, Integer stock) {
+    public WineDTO(String name, Double alcohol, String types, Double price, Integer stock) {
         this.name = name;
         this.alcohol = alcohol;
         this.types = types;
@@ -43,11 +43,11 @@ public class WineDTO {
         this.alcohol = alcohol;
     }
 
-    public List<String> getTypes() {
+    public String getTypes() {
         return this.types;
     }
 
-    public void setTypes(List<String> types) {
+    public void setTypes(String types) {
         this.types = types;
     }
 
