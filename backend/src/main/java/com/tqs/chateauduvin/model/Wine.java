@@ -1,12 +1,9 @@
 package com.tqs.chateauduvin.model;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,7 +13,7 @@ import javax.persistence.Table;
 @Table(name = "wines")
 public class Wine {
     @Id // The ID will be auto generated
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "name", nullable = false)
