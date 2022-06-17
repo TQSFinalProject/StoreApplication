@@ -35,8 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.CoreMatchers.is;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.json.JSONObject;  
 
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK, classes = ChateauduvinApplication.class)
@@ -75,10 +73,7 @@ public class CartMechanismTests {
         Customer cust1 = new Customer("Bob", "919191919", "BobPancakes", "bobby99");
         storeServ.saveCustomer(cust1);
         LogInReq req1 = new LogInReq("BobPancakes", "bobby99");
-        MvcResult result1 = mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req1)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.token").exists())
-        .andReturn();
+        MvcResult result1 = mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req1))).andReturn();
         JSONObject tokenJSON1 = new JSONObject(result1.getResponse().getContentAsString());
         token1 = tokenJSON1.getString("token");
     }
