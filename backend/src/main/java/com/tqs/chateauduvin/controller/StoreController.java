@@ -1,6 +1,5 @@
 package com.tqs.chateauduvin.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -116,7 +115,7 @@ public class StoreController {
         if(username.equals(customer.getUsername())) {
             if(quantity == null) quantity = 1;
             try {
-                storeServ.addWineToCart(customer, wineid, quantity);
+                storeServ.deleteWineFromCart(customer, wineid, quantity);
                 return ResponseEntity.ok().build();
             } catch(NoSuchElementException e) {
                 return ResponseEntity.status(404).body("Wine not found.");
@@ -127,7 +126,7 @@ public class StoreController {
     }
 
     @GetMapping("/cart")
-    public ResponseEntity<Map<Wine,Integer>> getCustomerCart(@RequestHeader("authorization") String auth) {
+    public ResponseEntity<Map<Long,Integer>> getCustomerCart(@RequestHeader("authorization") String auth) {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Customer customer = storeServ.getCustomerByUsername(username);

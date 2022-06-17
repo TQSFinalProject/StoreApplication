@@ -1,11 +1,13 @@
 package com.tqs.chateauduvin.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,18 +32,19 @@ public class Customer {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ElementCollection
-    private Map<Wine, Integer> cart;
+    @Column(name = "cart", nullable = false)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Map<Long, Integer> cart;
 
     public Customer() {
     }
 
-    public Customer(String name, String phone, String username, String password, Map<Wine,Integer> cart) {
+    public Customer(String name, String phone, String username, String password) {
         this.name = name;
         this.phone = phone;
         this.username = username;
         this.password = password;
-        this.cart = cart;
+        this.cart = new HashMap<>();
     }
 
     public long getId() {
@@ -84,11 +87,11 @@ public class Customer {
         this.password = password;
     }
 
-    public Map<Wine,Integer> getCart() {
+    public Map<Long,Integer> getCart() {
         return this.cart;
     }
 
-    public void setCart(Map<Wine,Integer> cart) {
+    public void setCart(Map<Long, Integer> cart) {
         this.cart = cart;
     }
 
@@ -100,12 +103,12 @@ public class Customer {
             return false;
         }
         Customer customer = (Customer) o;
-        return id == customer.id && Objects.equals(name, customer.name) && Objects.equals(phone, customer.phone) && Objects.equals(username, customer.username) && Objects.equals(password, customer.password) && Objects.equals(cart, customer.cart);
+        return id == customer.id && Objects.equals(name, customer.name) && Objects.equals(phone, customer.phone) && Objects.equals(username, customer.username) && Objects.equals(password, customer.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, phone, username, password, cart);
+        return Objects.hash(id, name, phone, username, password);
     }
 
     @Override
@@ -116,8 +119,6 @@ public class Customer {
             ", phone='" + getPhone() + "'" +
             ", username='" + getUsername() + "'" +
             ", password='" + getPassword() + "'" +
-            ", cart='" + getCart() + "'" +
             "}";
     }
-    
 }

@@ -127,8 +127,6 @@ public class StoreService implements UserDetailsService {
     // Cart Logic
 
     public void addWineToCart(Customer cust, Long wineid, Integer quantity) {
-        System.out.println("AAAAAAAA");
-        System.out.println(wineid);
         Wine wine;
         try {
             wine = getWineById(wineid).get();
@@ -136,12 +134,12 @@ public class StoreService implements UserDetailsService {
             throw new NoSuchElementException();
         }
 
-        Map<Wine,Integer> cart = cust.getCart();
+        Map<Long,Integer> cart = cust.getCart();
         
-        Integer overall = (cart.keySet().contains(wine)) ? (cart.get(wine)+quantity) : quantity;
+        Integer overall = (cart.keySet().contains(wine.getId())) ? (cart.get(wine.getId())+quantity) : quantity;
 
         if(wine.getStock() < overall) throw new MissingResourceException(null, null, null);
-        else cart.put(wine, overall);
+        else cart.put(wine.getId(), overall);
 
         cust.setCart(cart);
         customerRep.save(cust);
@@ -155,12 +153,12 @@ public class StoreService implements UserDetailsService {
             throw new NoSuchElementException();
         }
 
-        Map<Wine,Integer> cart = customer.getCart(); 
+        Map<Long, Integer> cart = customer.getCart(); 
 
         // Is wine in user cart
-        if(cart.containsKey(wine)) {
-            cart.put(wine, cart.get(wine)-quantity);
-            if(cart.get(wine)<0) cart.put(wine, 0);
+        if(cart.containsKey(wine.getId())) {
+            cart.put(wine.getId(), cart.get(wine.getId())-quantity);
+            if(cart.get(wine.getId())<=0) cart.remove(wine.getId());
             customer.setCart(cart);
             customerRep.save(customer);
         }
