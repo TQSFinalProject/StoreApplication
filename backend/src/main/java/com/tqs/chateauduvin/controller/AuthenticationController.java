@@ -56,6 +56,15 @@ public class AuthenticationController {
         }
     }
 
+    @GetMapping("/myprofile")
+    public ResponseEntity<Customer> getCustomerDetails(@RequestHeader("authorization") String auth) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Customer cust = storeServ.getCustomer(username);
+        cust.setPassword(null);
+        return ResponseEntity.ok().body(cust);
+    }
+
     // In case we need role authorization
     // @PreAuthorize("hasRole('USER')")
     // @RequestMapping(value="/userping", method = RequestMethod.GET)

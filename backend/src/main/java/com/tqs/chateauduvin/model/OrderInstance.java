@@ -35,8 +35,7 @@ public class OrderInstance {
     public OrderInstance() {
     }
 
-    public OrderInstance(long id, Order order, Customer customer, Map<Wine,Integer> cart) {
-        this.id = id;
+    public OrderInstance(Order order, Customer customer, Map<Wine,Integer> cart) {
         this.order = order;
         this.customer = customer;
         this.cart = cart;

@@ -79,8 +79,16 @@ public class StoreService implements UserDetailsService {
     // @Autowired
     private BCryptPasswordEncoder bcryptEncoder = new BCryptPasswordEncoder();
 
-    public List<Customer> getCustomers() {
-        return customerRep.findAll();
+    public Customer saveCustomer(Customer cust) {
+
+        cust.setPassword(bcryptEncoder.encode(cust.getPassword()));
+
+        // In case we need role authorization
+        // Role role = roleService.findByName("USER");
+        // Set<Role> roleSet = new HashSet<>();
+        // roleSet.add(role);
+
+        return customerRep.save(cust);
     }
 
     public Customer getCustomerByUsername(String username) {
@@ -112,17 +120,7 @@ public class StoreService implements UserDetailsService {
     //     return authorities;
     // }
 
-    public Customer saveCustomer(Customer cust) {
-
-        cust.setPassword(bcryptEncoder.encode(cust.getPassword()));
-
-        // In case we need role authorization
-        // Role role = roleService.findByName("USER");
-        // Set<Role> roleSet = new HashSet<>();
-        // roleSet.add(role);
-
-        return customerRep.save(cust);
-    }
+    
 
     // Cart Logic
 
