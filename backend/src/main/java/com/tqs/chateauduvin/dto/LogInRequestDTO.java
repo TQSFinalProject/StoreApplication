@@ -26,29 +26,4 @@ public class LogInRequestDTO {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof LogInRequestDTO)) {
-            return false;
-        }
-        LogInRequestDTO logInReq = (LogInRequestDTO) o;
-        return Objects.equals(username, logInReq.username) && Objects.equals(password, logInReq.password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(username, password);
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-            " username='" + getUsername() + "'" +
-            ", password='" + getPassword() + "'" +
-            "}";
-    }
-
 }

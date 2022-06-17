@@ -66,15 +66,4 @@ public class WineDTO {
     public void setStock(Integer stock) {
         this.stock = stock;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof WineDTO)) {
-            return false;
-        }
-        WineDTO wineDTO = (WineDTO) o;
-        return Objects.equals(name, wineDTO.name) && Objects.equals(alcohol, wineDTO.alcohol) && Objects.equals(types, wineDTO.types) && Objects.equals(price, wineDTO.price) && Objects.equals(stock, wineDTO.stock);
-    }
 }

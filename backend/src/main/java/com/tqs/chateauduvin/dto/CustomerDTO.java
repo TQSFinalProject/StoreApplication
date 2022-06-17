@@ -66,16 +66,4 @@ public class CustomerDTO {
     public void setCart(Map<Long,Integer> cart) {
         this.cart = cart;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof CustomerDTO)) {
-            return false;
-        }
-        CustomerDTO customerDTO = (CustomerDTO) o;
-        return Objects.equals(id, customerDTO.id) && Objects.equals(name, customerDTO.name) && Objects.equals(phone, customerDTO.phone) && Objects.equals(username, customerDTO.username) && Objects.equals(cart, customerDTO.cart);
-    }
-
 }

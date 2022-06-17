@@ -55,16 +55,4 @@ public class CustomerCreationDTO {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof CustomerCreationDTO)) {
-            return false;
-        }
-        CustomerCreationDTO customerCreationDTO = (CustomerCreationDTO) o;
-        return Objects.equals(name, customerCreationDTO.name) && Objects.equals(phone, customerCreationDTO.phone) && Objects.equals(username, customerCreationDTO.username) && Objects.equals(password, customerCreationDTO.password);
-    }
-    
 }
