@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Table(name = "orderInstances") 
 public class OrderInstance {
     @Id //The ID will be auto generated
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @OneToOne(cascade = CascadeType.ALL)

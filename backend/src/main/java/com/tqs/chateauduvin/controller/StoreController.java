@@ -13,6 +13,7 @@ import com.tqs.chateauduvin.model.OrderInstance;
 import com.tqs.chateauduvin.service.StoreService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,8 +62,19 @@ public class StoreController {
     // Wines
 
     @GetMapping("/wines")
-    public ResponseEntity<List<Wine>> getWines() {
-        return ResponseEntity.ok().body(storeServ.getWines());
+    public ResponseEntity<Page<Wine>> getWines(
+        @RequestParam(required = false) Integer page, 
+        @RequestParam(required = false) Double minPrice, 
+        @RequestParam(required = false) Double maxPrice,
+        @RequestParam(required = false) Double minAlc,
+        @RequestParam(required = false) Double maxAlc,
+        @RequestParam(required = false) String type) {
+            if(page == null) page = 0;
+            if(minPrice == null) minPrice = 0.0;
+            if(maxPrice == null) maxPrice = Double.MAX_VALUE;
+            if(minAlc == null) minAlc = 0.0;
+            if(maxAlc == null) maxAlc = 100.0;
+            return ResponseEntity.ok().body(storeServ.getWinesPagedAndFiltered(page, minPrice, maxPrice, minAlc, maxAlc, type));
     }
 
     @GetMapping("/wines/{wineid}")

@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Table(name = "customers")
 public class Customer {
     @Id // The ID will be auto generated
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "name", nullable = false)
