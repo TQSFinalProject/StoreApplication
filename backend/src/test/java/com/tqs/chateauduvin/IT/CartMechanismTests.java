@@ -67,11 +67,8 @@ public class CartMechanismTests {
 
     @BeforeAll
     public void setUp() throws IOException, Exception {
-        List<String> types = new ArrayList<>();
-        types.add("dry");
-        types.add("rose");
-        Wine w1 = new Wine("w1", 12.0, types, 12.99, 12);
-        Wine w2 = new Wine("w2", 12.0, types, 12.99, 3);
+        Wine w1 = new Wine("w1", 12.0, "dry;rose", 12.99, 12);
+        Wine w2 = new Wine("w2", 12.0, "dry;white", 12.99, 3);
         wineRepository.save(w1);
         wineRepository.save(w2);
 
