@@ -35,7 +35,7 @@ public class WineFiltersTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Wine w1 = new Wine("1", 1.0, "A;B;C", 1.99, 10);
         Wine w2 = new Wine("2", 2.0, "A", 2.99, 10);
         Wine w3 = new Wine("3", 3.0, "B;C", 3.99, 10);
@@ -69,7 +69,7 @@ public class WineFiltersTest {
     }
 
     @Test
-    public void priceFiltering() throws Exception {
+    void priceFiltering() throws Exception {
         mvc.perform(get("/api/wines?minPrice=10"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content", hasSize(5)))
@@ -87,7 +87,7 @@ public class WineFiltersTest {
     }
 
     @Test
-    public void alcoholFiltering() throws Exception {
+    void alcoholFiltering() throws Exception {
         mvc.perform(get("/api/wines?minAlc=10"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content", hasSize(5)))
@@ -105,7 +105,7 @@ public class WineFiltersTest {
     }
 
     @Test
-    public void typeFiltering() throws Exception {
+    void typeFiltering() throws Exception {
         mvc.perform(get("/api/wines?type=B"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content", hasSize(6)))
@@ -113,7 +113,7 @@ public class WineFiltersTest {
     }
 
     @Test
-    public void pagination() throws Exception {
+    void pagination() throws Exception {
         mvc.perform(get("/api/wines?page=0"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content", hasSize(8)))
@@ -126,7 +126,7 @@ public class WineFiltersTest {
     }
 
     @Test
-    public void allFilters() throws Exception {
+    void allFilters() throws Exception {
         mvc.perform(get("/api/wines?maxAlc=10&minAlc=7&maxPrice=13&minPrice=8&type=A"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content", hasSize(2)))

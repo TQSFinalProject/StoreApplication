@@ -1,15 +1,14 @@
 package com.tqs.chateauduvin.controller;
 
-import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import com.tqs.chateauduvin.config.TokenProvider;
+import com.tqs.chateauduvin.dto.WineDTO;
 import com.tqs.chateauduvin.model.Customer;
-import com.tqs.chateauduvin.model.Order;
 import com.tqs.chateauduvin.model.Wine;
-import com.tqs.chateauduvin.model.OrderInstance;
 import com.tqs.chateauduvin.service.StoreService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
+@CrossOrigin("http://localhost:3002")
 @RestController
 @RequestMapping("/api")
 public class StoreController {
@@ -39,25 +38,25 @@ public class StoreController {
 
     // Orders
 
-    @GetMapping("/orders")
-    public ResponseEntity<List<Order>> getOrders() {
-        return ResponseEntity.ok().body(storeServ.getOrders());
-    }
+    // @GetMapping("/orders")
+    // public ResponseEntity<List<Order>> getOrders() {
+    //     return ResponseEntity.ok().body(storeServ.getOrders());
+    // }
 
-    @PostMapping("/orders")
-    public Order createOrder(@RequestBody Order order) {
-        return storeServ.saveOrder(order);
-    }
+    // @PostMapping("/orders")
+    // public Order createOrder(@RequestBody Order order) {
+    //     return storeServ.saveOrder(order);
+    // }
 
-    @GetMapping("/orderinst")
-    public ResponseEntity<List<OrderInstance>> getOrderInstances() {
-        return ResponseEntity.ok().body(storeServ.getOrderInstances());
-    }
+    // @GetMapping("/orderinst")
+    // public ResponseEntity<List<OrderInstance>> getOrderInstances() {
+    //     return ResponseEntity.ok().body(storeServ.getOrderInstances());
+    // }
 
-    @PostMapping("/orderinst")
-    public OrderInstance createOrderInstance(@RequestBody OrderInstance orderInstance) {
-        return storeServ.saveOrderInstance(orderInstance);
-    }
+    // @PostMapping("/orderinst")
+    // public OrderInstance createOrderInstance(@RequestBody OrderInstance orderInstance) {
+    //     return storeServ.saveOrderInstance(orderInstance);
+    // }
 
     // Wines
 
@@ -79,12 +78,14 @@ public class StoreController {
 
     @GetMapping("/wines/{wineid}")
     public ResponseEntity<Wine> getWineById(@PathVariable Long wineid) {
-        return ResponseEntity.ok().body(storeServ.getWineById(wineid).get());
+        Optional<Wine> wine = storeServ.getWineById(wineid);
+        if(wine.isPresent()) return ResponseEntity.ok().body(wine.get());
+        else return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/wines")
-    public Wine createWine(@RequestBody Wine wine) {
-        return storeServ.saveWine(wine);
+    public Wine createWine(@RequestBody WineDTO wine) {
+        return storeServ.saveWine(wine.toWineEntity());
     }
 
     // Authentication Example
@@ -104,19 +105,16 @@ public class StoreController {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Customer customer = storeServ.getCustomerByUsername(username);
-        if(username.equals(customer.getUsername())) {
-            if(quantity == null) quantity = 1;
-            try {
-                storeServ.addWineToCart(customer, wineid, quantity);
-                return ResponseEntity.ok().build();
-            } catch(NoSuchElementException e) {
-                return ResponseEntity.status(404).body("Wine not found.");
-            } catch(MissingResourceException e) {
-                return ResponseEntity.status(406).body("Not enough stock.");
-            }
+        if(quantity == null) quantity = 1;
+        try {
+            storeServ.addWineToCart(customer, wineid, quantity);
+            return ResponseEntity.ok().build();
+        } catch(NoSuchElementException e) {
+            return ResponseEntity.status(404).body("Wine not found.");
+        } catch(MissingResourceException e) {
+            return ResponseEntity.status(406).body("Not enough stock.");
         }
-        else
-            return ResponseEntity.status(403).build();
+
     }
 
     @DeleteMapping("/cart/{wineid}")
@@ -124,17 +122,13 @@ public class StoreController {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Customer customer = storeServ.getCustomerByUsername(username);
-        if(username.equals(customer.getUsername())) {
-            if(quantity == null) quantity = 1;
-            try {
-                storeServ.deleteWineFromCart(customer, wineid, quantity);
-                return ResponseEntity.ok().build();
-            } catch(NoSuchElementException e) {
-                return ResponseEntity.status(404).body("Wine not found.");
-            }
+        if(quantity == null) quantity = 1;
+        try {
+            storeServ.deleteWineFromCart(customer, wineid, quantity);
+            return ResponseEntity.ok().build();
+        } catch(NoSuchElementException e) {
+            return ResponseEntity.status(404).body("Wine not found.");
         }
-        else
-            return ResponseEntity.status(403).build();
     }
 
     @GetMapping("/cart")
