@@ -1,4 +1,4 @@
-package com.tqs.chateauduvin.controller;
+package com.tqs.chateauduvin.IT;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -13,8 +13,9 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.tqs.chateauduvin.ChateauduvinApplication;
 import com.tqs.chateauduvin.JsonUtils;
+import com.tqs.chateauduvin.dto.CustomerCreationDTO;
+import com.tqs.chateauduvin.dto.LogInRequestDTO;
 import com.tqs.chateauduvin.model.Customer;
-import com.tqs.chateauduvin.model.LogInReq;
 import com.tqs.chateauduvin.repository.CustomerRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,8 +45,8 @@ public class AuthenticationTests {
     }
 
     @Test
-    public void whenRegister_thenSuccessfullAuth() throws IOException, Exception {
-        Customer cust = new Customer("Bob", "919191919", "BobPancakes", "pancake123");
+    void whenRegister_thenSuccessfullAuth() throws IOException, Exception {
+        CustomerCreationDTO cust = new CustomerCreationDTO("Bob", "919191919", "BobPancakes", "pancake123");
 
         mvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust)))
         .andExpect(status().isOk());
@@ -58,7 +59,7 @@ public class AuthenticationTests {
         assertNotEquals(cust.getPassword(), found.get(0).getPassword());
 
         // User can successfully authenticate, recieving a token
-        LogInReq credentials = new LogInReq(cust.getUsername(), cust.getPassword());
+        LogInRequestDTO credentials = new LogInRequestDTO(cust.getUsername(), cust.getPassword());
         MvcResult result = mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(credentials)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").exists())
@@ -73,8 +74,8 @@ public class AuthenticationTests {
     }
 
     @Test
-    public void whenAuthenticateWithNoCreds_thenUnsuccessfulAuth() throws IOException, Exception {
-        LogInReq unregisteredCredentials = new LogInReq("not", "registered");
+    void whenAuthenticateWithNoCreds_thenUnsuccessfulAuth() throws IOException, Exception {
+        LogInRequestDTO unregisteredCredentials = new LogInRequestDTO("not", "registered");
 
         mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(unregisteredCredentials)))
         .andExpect(status().is(500))
@@ -82,9 +83,9 @@ public class AuthenticationTests {
     }
 
     @Test
-    public void whenRegisterWithDuplicatedUsername_thenUnsuccessfulRegister() throws IOException, Exception {
-        Customer cust1 = new Customer("Bob", "919191919", "BobPancakes", "pancake123");
-        Customer cust2 = new Customer("Rita","929292929","BobPancakes","rita");
+    void whenRegisterWithDuplicatedUsername_thenUnsuccessfulRegister() throws IOException, Exception {
+        CustomerCreationDTO cust1 = new CustomerCreationDTO("Bob", "919191919", "BobPancakes", "pancake123");
+        CustomerCreationDTO cust2 = new CustomerCreationDTO("Rita","929292929","BobPancakes","rita");
 
         mvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust1)))
         .andExpect(status().isOk());

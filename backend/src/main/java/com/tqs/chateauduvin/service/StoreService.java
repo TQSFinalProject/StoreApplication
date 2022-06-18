@@ -19,6 +19,9 @@ import com.tqs.chateauduvin.repository.OrderInstanceRepository;
 import com.tqs.chateauduvin.repository.CustomerRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 // import org.springframework.security.core.authority.SimpleGrantedAuthority;
 // import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -125,12 +128,13 @@ public class StoreService implements UserDetailsService {
     // Cart Logic
 
     public void addWineToCart(Customer cust, Long wineid, Integer quantity) {
+        Optional<Wine> optWine = getWineById(wineid);
         Wine wine;
-        try {
-            wine = getWineById(wineid).get();
-        } catch(NoSuchElementException e) {
+        if(optWine.isPresent())
+            wine = optWine.get();
+        else
             throw new NoSuchElementException();
-        }
+
 
         Map<Long,Integer> cart = cust.getCart();
         
@@ -144,12 +148,12 @@ public class StoreService implements UserDetailsService {
     }
 
     public void deleteWineFromCart(Customer customer, Long wineid, Integer quantity) {
+        Optional<Wine> optWine = getWineById(wineid);
         Wine wine;
-        try {
-            wine = getWineById(wineid).get();
-        } catch(NoSuchElementException e) {
+        if(optWine.isPresent())
+            wine = optWine.get();
+        else
             throw new NoSuchElementException();
-        }
 
         Map<Long, Integer> cart = customer.getCart(); 
 
@@ -161,6 +165,14 @@ public class StoreService implements UserDetailsService {
             customerRep.save(customer);
         }
         else throw new NoSuchElementException();
+    }
+
+    public Page<Wine> getWinesPagedAndFiltered(Integer page, Double minPrice, Double maxPrice, Double minAlc, Double maxAlc, String type) {
+        Pageable pageable = PageRequest.of(page,8);
+        if(type == null)
+            return wineRep.findByPriceBetweenAndAlcoholBetween(minPrice, maxPrice, minAlc, maxAlc, pageable);
+        else
+            return wineRep.findByPriceBetweenAndAlcoholBetweenAndTypesContaining(minPrice, maxPrice, minAlc, maxAlc, type, pageable);
     }
 
 }
