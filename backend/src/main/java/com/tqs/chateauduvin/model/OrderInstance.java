@@ -29,13 +29,13 @@ public class OrderInstance {
     private Customer customer;
 
     @ElementCollection
-    private Map<Wine, Integer> cart;
+    private Map<Long, Integer> cart;
 
 
     public OrderInstance() {
     }
 
-    public OrderInstance(Order order, Customer customer, Map<Wine,Integer> cart) {
+    public OrderInstance(Order order, Customer customer, Map<Long,Integer> cart) {
         this.order = order;
         this.customer = customer;
         this.cart = cart;
@@ -65,11 +65,11 @@ public class OrderInstance {
         this.customer = customer;
     }
 
-    public Map<Wine,Integer> getCart() {
+    public Map<Long,Integer> getCart() {
         return this.cart;
     }
 
-    public void setCart(Map<Wine,Integer> cart) {
+    public void setCart(Map<Long,Integer> cart) {
         this.cart = cart;
     }
 

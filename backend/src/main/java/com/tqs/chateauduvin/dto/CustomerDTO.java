@@ -1,7 +1,5 @@
 package com.tqs.chateauduvin.dto;
 
-import java.util.Map;
-
 import com.tqs.chateauduvin.model.Customer;
 
 public class CustomerDTO {
@@ -9,21 +7,19 @@ public class CustomerDTO {
     private String name;
     private String phone;
     private String username;
-    private Map<Long,Integer> cart;
 
     public static CustomerDTO fromCustomerEntity(Customer cust) {
-        return new CustomerDTO(cust.getId(), cust.getName(), cust.getPhone(), cust.getUsername(), cust.getCart());
+        return new CustomerDTO(cust.getId(), cust.getName(), cust.getPhone(), cust.getUsername());
     }
 
     public CustomerDTO() {
     }
 
-    public CustomerDTO(Long id, String name, String phone, String username, Map<Long,Integer> cart) {
+    public CustomerDTO(Long id, String name, String phone, String username) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.username = username;
-        this.cart = cart;
     }
 
     public Long getId() {
@@ -56,13 +52,5 @@ public class CustomerDTO {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public Map<Long,Integer> getCart() {
-        return this.cart;
-    }
-
-    public void setCart(Map<Long,Integer> cart) {
-        this.cart = cart;
     }
 }
