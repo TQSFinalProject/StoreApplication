@@ -23,6 +23,7 @@ import com.tqs.chateauduvin.dto.OrderCreationDTO;
 import com.tqs.chateauduvin.model.Customer;
 import com.tqs.chateauduvin.model.Wine;
 import com.tqs.chateauduvin.repository.CustomerRepository;
+import com.tqs.chateauduvin.repository.OrderInstanceRepository;
 import com.tqs.chateauduvin.repository.WineRepository;
 import com.tqs.chateauduvin.service.StoreService;
 
@@ -54,6 +55,9 @@ public class OrderCreationTests {
     private CustomerRepository customerRepository;
 
     @Autowired
+    private OrderInstanceRepository orderRepository;
+
+    @Autowired
     private StoreService storeServ;
 
     String token1;
@@ -65,6 +69,7 @@ public class OrderCreationTests {
 
     @AfterAll
     public void resetDb() {
+        orderRepository.deleteAll();
         customerRepository.deleteAll();
         wineRepository.deleteAll();
     }
