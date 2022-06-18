@@ -1,17 +1,18 @@
 package com.tqs.chateauduvin.service;
 
 import java.util.ArrayList;
-// import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
-// import java.util.Set;
 import java.util.Optional;
 
 import com.tqs.chateauduvin.model.Order;
 import com.tqs.chateauduvin.model.Wine;
 import com.tqs.chateauduvin.model.OrderInstance;
+import com.tqs.chateauduvin.dto.OrderCreationDTO;
+import com.tqs.chateauduvin.dto.OrderDTO;
 import com.tqs.chateauduvin.model.Customer;
 import com.tqs.chateauduvin.repository.OrderRepository;
 import com.tqs.chateauduvin.repository.WineRepository;
@@ -22,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-// import org.springframework.security.core.authority.SimpleGrantedAuthority;
-// import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -173,6 +172,56 @@ public class StoreService implements UserDetailsService {
             return wineRep.findByPriceBetweenAndAlcoholBetween(minPrice, maxPrice, minAlc, maxAlc, pageable);
         else
             return wineRep.findByPriceBetweenAndAlcoholBetweenAndTypesContaining(minPrice, maxPrice, minAlc, maxAlc, type, pageable);
+    }
+
+    public OrderInstance newOrder(Customer customer, OrderCreationDTO orderDTO) {
+        Map<Long, Integer> custCart = customer.getCart();
+        if(custCart.isEmpty()) throw new NoSuchElementException();
+        for(Long wineId : custCart.keySet()) {
+            Optional<Wine> optWine = wineRep.findById(wineId);
+            if(optWine.isPresent()) {
+                Wine wine = optWine.get();
+                wine.setStock(wine.getStock() - custCart.get(wineId));
+                wineRep.save(wine);
+            }
+            else throw new NoSuchElementException();
+            List<Customer> customers = customerRep.findAll();
+            int customerNum = customers.size();
+            for(int i = 0; i < customerNum; i++) {
+                Customer otherCustomer = customers.get(i);
+                if(otherCustomer == customer) continue;
+                Map<Long, Integer> otherCustomerCart = otherCustomer.getCart();
+                otherCustomerCart.remove(wineId);
+                otherCustomer.setCart(otherCustomerCart);
+                customerRep.save(otherCustomer);
+            }
+        }
+        Order order = orderDTO.toOrderEntity();
+        Map<Long, Integer> orderCart = new HashMap<>(custCart);
+        OrderInstance orderInst = new OrderInstance(order, customer, orderCart);
+        orderInstanceRep.save(orderInst);
+        customer.setCart(new HashMap<>());
+        customerRep.save(customer);
+        return orderInst;
+    }
+
+    public List<OrderDTO> getCustomerOrders(Customer customer) {
+        List<OrderInstance> found = orderInstanceRep.findByCustomer(customer);
+        List<OrderDTO> ret = new ArrayList<>();
+        for(OrderInstance instance : found) {
+            ret.add(OrderDTO.fromOrderInstanceEntity(instance));
+        }
+        return ret;
+    }
+
+    public OrderInstance getCustomerOrder(Customer customer, Long orderId) {
+        Optional<OrderInstance> optOrder = orderInstanceRep.findById(orderId);
+        if(optOrder.isPresent()) {
+            OrderInstance order = optOrder.get();
+            if(order.getCustomer().getUsername() != customer.getUsername()) throw new SecurityException();
+            else return order;
+        }
+        else throw new NoSuchElementException();
     }
 
 }
