@@ -1,5 +1,6 @@
 package com.tqs.chateauduvin.IT;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import com.tqs.chateauduvin.dto.LogInRequestDTO;
 import com.tqs.chateauduvin.dto.OrderCreationDTO;
 import com.tqs.chateauduvin.model.Customer;
 import com.tqs.chateauduvin.model.Wine;
+import com.tqs.chateauduvin.repository.CustomerRepository;
 import com.tqs.chateauduvin.repository.WineRepository;
 import com.tqs.chateauduvin.service.StoreService;
 
@@ -49,6 +51,9 @@ public class OrderCreationTests {
     private WineRepository wineRepository;
 
     @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
     private StoreService storeServ;
 
     String token1;
@@ -57,6 +62,12 @@ public class OrderCreationTests {
     Wine w1;
     Wine w2;
     Wine w3;
+
+    @AfterAll
+    public void resetDb() {
+        customerRepository.deleteAll();
+        wineRepository.deleteAll();
+    }
 
     @BeforeAll
     void setUp() throws IOException, Exception {
