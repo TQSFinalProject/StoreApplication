@@ -40,30 +40,10 @@ public class StoreService implements UserDetailsService {
     @Autowired
     OrderInstanceRepository orderInstanceRep;
 
-    public List<Order> getOrders() {
-        return orderRep.findAll();
-    }
-
-    public Order saveOrder(Order order) {
-        return orderRep.save(order);
-    }
-
-    public List<OrderInstance> getOrderInstances() {
-        return orderInstanceRep.findAll();
-    }
-
-    public OrderInstance saveOrderInstance(OrderInstance order) {
-        return orderInstanceRep.save(order);
-    }
-
     // Wine Logic
     
     @Autowired
     WineRepository wineRep;
-
-    public List<Wine> getWines() {
-        return wineRep.findAll();
-    }
 
     public Optional<Wine> getWineById(Long id) {
         return wineRep.findById(id);
@@ -95,10 +75,6 @@ public class StoreService implements UserDetailsService {
 
     public Customer getCustomerByUsername(String username) {
         return customerRep.findByUsername(username);
-    }
-
-    public Optional<Customer> getCustomerById(Long id) {
-        return customerRep.findById(id);
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -218,7 +194,7 @@ public class StoreService implements UserDetailsService {
         Optional<OrderInstance> optOrder = orderInstanceRep.findById(orderId);
         if(optOrder.isPresent()) {
             OrderInstance order = optOrder.get();
-            if(order.getCustomer().getUsername() != customer.getUsername()) throw new SecurityException();
+            if(order.getCustomer().getUsername().equals(customer.getUsername())) throw new SecurityException();
             else return order;
         }
         else throw new NoSuchElementException();

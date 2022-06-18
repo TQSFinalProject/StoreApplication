@@ -133,4 +133,18 @@ public class CartMechanismTests {
         mvc.perform(put("/api/cart/1234?quantity=5").header("Authorization", "Bearer "+token1))
         .andExpect(status().isNotFound());
     }
+
+    @Test
+    @Order(6)
+    void whenExcessAdd_thenCantAdd() throws Exception {
+        mvc.perform(put("/api/cart/"+w2.getId()+"?quantity=3").header("Authorization", "Bearer "+token1))
+        .andExpect(status().isOk());
+
+        mvc.perform(put("/api/cart/"+w2.getId()+"?quantity=1").header("Authorization", "Bearer "+token1))
+        .andExpect(status().is(406));
+
+        mvc.perform(get("/api/cart").header("Authorization", "Bearer "+token1))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$."+w2.getId(), is(3)));
+    }
 }
