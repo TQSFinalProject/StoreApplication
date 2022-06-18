@@ -194,7 +194,7 @@ public class StoreService implements UserDetailsService {
         Optional<OrderInstance> optOrder = orderInstanceRep.findById(orderId);
         if(optOrder.isPresent()) {
             OrderInstance order = optOrder.get();
-            if(order.getCustomer().getUsername().equals(customer.getUsername())) throw new SecurityException();
+            if(!order.getCustomer().getUsername().equals(customer.getUsername())) throw new SecurityException();
             else return order;
         }
         else throw new NoSuchElementException();
