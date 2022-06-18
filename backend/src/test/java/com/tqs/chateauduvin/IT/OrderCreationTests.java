@@ -78,13 +78,13 @@ public class OrderCreationTests {
         wineRepository.save(w2);
         wineRepository.save(w3);
 
-        Customer cust1 = new Customer("Bob", "919191919", "BobPancakes", "bobby99");
+        Customer cust1 = new Customer("Bob", "919191919", "BobPancakes123", "bobby99");
         Map<Long,Integer> cart1 = new HashMap<>();
         cart1.put(w1.getId(), 5);
         cart1.put(w2.getId(), 3);
         cust1.setCart(cart1);
         storeServ.saveCustomer(cust1);
-        LogInRequestDTO req1 = new LogInRequestDTO("BobPancakes", "bobby99");
+        LogInRequestDTO req1 = new LogInRequestDTO("BobPancakes123", "bobby99");
         MvcResult result1 = mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req1))).andReturn();
         JSONObject tokenJSON1 = new JSONObject(result1.getResponse().getContentAsString());
         token1 = tokenJSON1.getString("token");
@@ -141,7 +141,7 @@ public class OrderCreationTests {
         .andExpect(jsonPath("$.order.orderDetails", is("some details")))
         .andExpect(jsonPath("$.order.phone", is("989898989")))
         .andExpect(jsonPath("$.customer.name", is("Bob")))
-        .andExpect(jsonPath("$.customer.username", is("BobPancakes")))
+        .andExpect(jsonPath("$.customer.username", is("BobPancakes123")))
         .andExpect(jsonPath("$.customer.phone", is("919191919")))
         .andExpect(jsonPath("$.customer.password").doesNotExist())
         .andExpect(jsonPath("$.cart."+w1.getId(), is(5)))
@@ -198,7 +198,7 @@ public class OrderCreationTests {
         mvc.perform(get("/api/orders").header("Authorization", "Bearer "+token1))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
-        .andExpect(jsonPath("$[0].customer.username", is("BobPancakes")));
+        .andExpect(jsonPath("$[0].customer.username", is("BobPancakes123")));
     }
 
     @Test
