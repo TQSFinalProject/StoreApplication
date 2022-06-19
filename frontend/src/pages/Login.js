@@ -50,13 +50,13 @@ function validateUsername(username) {
 }
 
 function validateEmail(email) {
-    var atSymbol = email.indexOf("@");
-    if (atSymbol < 1) return false;
+    // var atSymbol = email.indexOf("@");
+    // if (atSymbol < 1) return false;
 
-    var dot = email.indexOf(".");
-    if (dot <= atSymbol + 2) return false;
+    // var dot = email.indexOf(".");
+    // if (dot <= atSymbol + 2) return false;
 
-    if (dot === email.length - 1) return false;
+    // if (dot === email.length - 1) return false;
 
     return true;
 }
@@ -79,6 +79,7 @@ function validatePassword(password) {
 function Login() {
 
     const [cookies, setCookie] = useCookies(['logged_user', 'token'])
+    console.log("logged_user: ", cookies.logged_user)
 
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
@@ -150,8 +151,11 @@ function Login() {
                 .then(function (response) {
                     console.log(response);
                     if (response.data === 'User registered successfully.') {
+                        setCookie('logged_user', loginUsername, { path: '/' })
+                        setCookie('token', response.data.token, { path: '/' }) // , maxAge: '3600'
+
                         // TODO: successful registration
-                        alert('Registration was successful! Proceed to login please :)')
+                        alert('Registration was successful! You\'re already logged in :)')
                     }
                     else {
                         alert('There was a problem with your registration. Please try again!')

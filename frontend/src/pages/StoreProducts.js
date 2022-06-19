@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Bootstrap
 import Container from 'react-bootstrap/Container'
@@ -23,6 +23,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate } from 'react-router-dom';
 
+// axios
+import axios from "axios";
+
+const endpoint_wines = "api/wines";
+
 function valuetextPrice(value) {
   return `${value}£`;
 }
@@ -33,6 +38,25 @@ function valuetextAlcohol(value) {
 
 function StoreProducts() {
 
+  useEffect(() => {
+
+    // let config = {
+    //   headers: {
+    //     'Access-Control-Allow-Origin': '*'
+    //   }
+    // }
+
+    axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_wines, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+      }
+    }).then((response) => {
+      console.log(response.data);
+    });
+
+  }, []);
+
   let navigate = useNavigate();
   let local_products = [...products]
   let minPrice = Math.min(...local_products.map(o => o.price))
@@ -40,11 +64,11 @@ function StoreProducts() {
   let marksPrice = [
     {
       "value": minPrice,
-      "label": minPrice+"£"
+      "label": minPrice + "£"
     },
     {
       "value": maxPrice,
-      "label": maxPrice+"£"
+      "label": maxPrice + "£"
     }
   ]
 
@@ -53,11 +77,11 @@ function StoreProducts() {
   let marksAlcohol = [
     {
       "value": minAlcohol,
-      "label": minAlcohol+"%"
+      "label": minAlcohol + "%"
     },
     {
       "value": maxAlcohol,
-      "label": maxAlcohol+"%"
+      "label": maxAlcohol + "%"
     }
   ]
 
@@ -65,8 +89,8 @@ function StoreProducts() {
     navigate('/cart/')
   }
 
-  const [valuePrice,setValuePrice] = React.useState([minPrice,maxPrice]);
-  const [valueAlcohol, setValueAlcohol] = React.useState([minAlcohol,maxAlcohol]);
+  const [valuePrice, setValuePrice] = React.useState([minPrice, maxPrice]);
+  const [valueAlcohol, setValueAlcohol] = React.useState([minAlcohol, maxAlcohol]);
 
   const handleChangePrice = (event, newValue) => {
     setValuePrice(newValue);
@@ -177,7 +201,7 @@ function StoreProducts() {
           <Col sm={8}>
             <Row className="d-flex justify-content-center">
               {local_products.map((callbackfn, idx) => (
-                <Toast key={"key" + local_products[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
+                <Toast key={"product_key" + local_products[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
                   <Toast.Header closeButton={false}>
                     <Container>
                       <Row>
@@ -186,7 +210,7 @@ function StoreProducts() {
                         </Col>
                         <Col style={{ display: 'flex', justifyContent: 'right' }}>
                           {local_products[idx].types.map((callbackfn, idx2) => (
-                            <span class="badge" style={{ backgroundColor: typeToColor(local_products[idx].types[idx2]), margin: "1%" }}>{local_products[idx].types[idx2]}</span>
+                            <span key={"product_type_key" + idx2} className="badge" style={{ backgroundColor: typeToColor(local_products[idx].types[idx2]), margin: "1%" }}>{local_products[idx].types[idx2]}</span>
                           ))}
                         </Col>
                       </Row>

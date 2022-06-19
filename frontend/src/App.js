@@ -32,14 +32,14 @@ export let staff = [
 let wine_img = "https://www.creativefabrica.com/wp-content/uploads/2019/08/Bottle-of-wine-580x386.jpg"
 
 export let products = [
-  { id: 1, name: "Wine 1", types: ["red"], img: wine_img, price: 19.99, alcohol: 13, available: true},
-  { id: 2, name: "Wine 2", types: ["red"], img: wine_img, price: 15.99, alcohol: 11, available: true},
-  { id: 3, name: "Wine 3", types: ["dry"], img: wine_img, price: 17.99, alcohol: 12, available: true},
-  { id: 4, name: "Wine 4", types: ["rose"], img: wine_img, price: 10.99, alcohol: 12.5, available: false},
-  { id: 5, name: "Wine 5", types: ["sparkling", "rose"], img: wine_img, price: 9.99, alcohol: 13.5, available: true},
-  { id: 6, name: "Wine 6", types: ["rose"], img: wine_img, price: 20.99, alcohol: 9, available: true},
-  { id: 7, name: "Wine 7", types: ["white", "sparkling"], img: wine_img, price: 11.99, alcohol: 10.5, available: true},
-  { id: 8, name: "Wine 8", types: ["red"], img: wine_img, price: 13.99, alcohol: 12.5, available: true}
+  { id: 1, name: "Wine 1", types: ["red"], img: wine_img, price: 19.99, alcohol: 13, available: true },
+  { id: 2, name: "Wine 2", types: ["red"], img: wine_img, price: 15.99, alcohol: 11, available: true },
+  { id: 3, name: "Wine 3", types: ["dry"], img: wine_img, price: 17.99, alcohol: 12, available: true },
+  { id: 4, name: "Wine 4", types: ["rose"], img: wine_img, price: 10.99, alcohol: 12.5, available: false },
+  { id: 5, name: "Wine 5", types: ["sparkling", "rose"], img: wine_img, price: 9.99, alcohol: 13.5, available: true },
+  { id: 6, name: "Wine 6", types: ["rose"], img: wine_img, price: 20.99, alcohol: 9, available: true },
+  { id: 7, name: "Wine 7", types: ["white", "sparkling"], img: wine_img, price: 11.99, alcohol: 10.5, available: true },
+  { id: 8, name: "Wine 8", types: ["red"], img: wine_img, price: 13.99, alcohol: 12.5, available: true }
 ]
 
 function App() {

@@ -1,6 +1,6 @@
 // React
 import React from 'react';
-// import { Link } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 import { Link } from "react-router-dom";
 
 // Components
@@ -15,6 +15,8 @@ import Col from 'react-bootstrap/Col'
 import '../components/css/HomepageTitle.css'
 
 function Homepage() {
+
+    const [cookies, setCookie] = useCookies(['logged_user', 'token'])
 
     return (
         <>
@@ -38,6 +40,25 @@ function Homepage() {
                                     <span className="button-text">Start Ordering</span>
                                 </button>
                             </Link>
+                            {/* {cookies.logged_user != undefined && cookies.logged_user != "" ?
+                                <Link to="/choose_store">
+                                    <button className="learn-more">
+                                        <span className="circle" aria-hidden="true">
+                                            <span className="icon arrow"></span>
+                                        </span>
+                                        <span className="button-text">Start Ordering</span>
+                                    </button>
+                                </Link>
+                                :
+                                <Link to="/login">
+                                    <button className="learn-more">
+                                        <span className="circle" aria-hidden="true">
+                                            <span className="icon arrow"></span>
+                                        </span>
+                                        <span className="button-text">Login</span>
+                                    </button>
+                                </Link>
+                            } */}
                         </div>
                     </Col>
                 </Row>
