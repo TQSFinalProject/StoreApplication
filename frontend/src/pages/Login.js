@@ -147,7 +147,7 @@ function Login() {
                 "cart": {} // TODO: hmmmm
             }
 
-            axios.post(process.env.REACT_APP_BACKEND_URL + registerEndpoint, newRegister)
+            axios.post(process.env.REACT_APP_BACKEND_URL + registerEndpoint, newRegister, {headers:{"Access-Control-Allow-Origin": "*"}})
                 .then(function (response) {
                     console.log(response);
                     if (response.data === 'User registered successfully.') {

@@ -1,13 +1,17 @@
 package com.tqs.chateauduvin.controller;
 
+import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.tqs.chateauduvin.config.TokenProvider;
+import com.tqs.chateauduvin.dto.OrderCreationDTO;
+import com.tqs.chateauduvin.dto.OrderDTO;
 import com.tqs.chateauduvin.dto.WineDTO;
 import com.tqs.chateauduvin.model.Customer;
+import com.tqs.chateauduvin.model.OrderInstance;
 import com.tqs.chateauduvin.model.Wine;
 import com.tqs.chateauduvin.service.StoreService;
 
@@ -26,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin("http://localhost:3002")
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api")
 public class StoreController {
@@ -38,25 +42,44 @@ public class StoreController {
 
     // Orders
 
-    // @GetMapping("/orders")
-    // public ResponseEntity<List<Order>> getOrders() {
-    //     return ResponseEntity.ok().body(storeServ.getOrders());
-    // }
+    @PostMapping("/orders")
+    public ResponseEntity<OrderDTO> newOrder(@RequestHeader("authorization") String auth, @RequestBody OrderCreationDTO orderCreationDTO) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Customer customer = storeServ.getCustomerByUsername(username);
+        try{ 
+            OrderInstance order = storeServ.newOrder(customer, orderCreationDTO);
+            OrderDTO orderDTO = OrderDTO.fromOrderInstanceEntity(order);
+            return ResponseEntity.ok().body(orderDTO);
+        } catch(NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-    // @PostMapping("/orders")
-    // public Order createOrder(@RequestBody Order order) {
-    //     return storeServ.saveOrder(order);
-    // }
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderDTO>> getMyOrders(@RequestHeader("authorization") String auth) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Customer customer = storeServ.getCustomerByUsername(username);
+        return ResponseEntity.ok().body(storeServ.getCustomerOrders(customer));
 
-    // @GetMapping("/orderinst")
-    // public ResponseEntity<List<OrderInstance>> getOrderInstances() {
-    //     return ResponseEntity.ok().body(storeServ.getOrderInstances());
-    // }
+    }
 
-    // @PostMapping("/orderinst")
-    // public OrderInstance createOrderInstance(@RequestBody OrderInstance orderInstance) {
-    //     return storeServ.saveOrderInstance(orderInstance);
-    // }
+    @GetMapping("/orders/{orderid}")
+    public ResponseEntity<OrderDTO> getOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Customer customer = storeServ.getCustomerByUsername(username);
+        try{ 
+            OrderInstance order = storeServ.getCustomerOrder(customer, orderid);
+            OrderDTO orderDTO = OrderDTO.fromOrderInstanceEntity(order);
+            return ResponseEntity.ok().body(orderDTO);
+        } catch(NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch(SecurityException e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
 
     // Wines
 
@@ -87,16 +110,6 @@ public class StoreController {
     public Wine createWine(@RequestBody WineDTO wine) {
         return storeServ.saveWine(wine.toWineEntity());
     }
-
-    // Authentication Example
-    // @GetMapping("/orderinst")
-    // public ResponseEntity<List<OrderInstance>> getOrderInstances(@RequestHeader("authorization") String auth) {
-    //     String token = auth.split(" ")[1];
-    //     if(jwtTokenUtil.getUsernameFromToken(token).equals("admin"))
-    //         return ResponseEntity.ok().body(storeServ.getOrderInstances());
-    //     else
-    //         return ResponseEntity.status(401).build();
-    // }
 
     // Cart Endpoints
 
