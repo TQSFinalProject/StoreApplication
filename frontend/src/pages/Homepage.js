@@ -32,15 +32,15 @@ function Homepage() {
                     </Col>
                     <Col sm={4}>
                         <div style={{ width: '100%', paddingTop: '20%', textAlign: "center" }}>
-                            <Link to="/choose_store">
+                            {/* <Link to="/choose_store">
                                 <button className="learn-more">
                                     <span className="circle" aria-hidden="true">
                                         <span className="icon arrow"></span>
                                     </span>
                                     <span className="button-text">Start Ordering</span>
                                 </button>
-                            </Link>
-                            {/* {cookies.logged_user != undefined && cookies.logged_user != "" ?
+                            </Link> */}
+                            {cookies.logged_user != undefined && cookies.logged_user != "" ?
                                 <Link to="/choose_store">
                                     <button className="learn-more">
                                         <span className="circle" aria-hidden="true">
@@ -58,7 +58,7 @@ function Homepage() {
                                         <span className="button-text">Login</span>
                                     </button>
                                 </Link>
-                            } */}
+                            }
                         </div>
                     </Col>
                 </Row>

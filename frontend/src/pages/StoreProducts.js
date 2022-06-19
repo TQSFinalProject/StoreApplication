@@ -46,12 +46,7 @@ function StoreProducts() {
     //   }
     // }
 
-    axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_wines, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-      }
-    }).then((response) => {
+    axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_wines,).then((response) => {
       console.log(response.data);
     });
 

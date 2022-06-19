@@ -1,6 +1,6 @@
 // React
 import React from 'react';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 // Pages
@@ -15,6 +15,8 @@ import ChooseStore from './pages/ChooseStore';
 import StoreInfo from './pages/StoreInfo';
 import StoreProducts from './pages/StoreProducts';
 import Login from './pages/Login';
+// cookies
+import { useCookies } from 'react-cookie';
 
 export let staff = [
   { id: 1, name: "Afonso Campos", rating: 5, img: 'https://cdn-icons-png.flaticon.com/512/147/147144.png', time: 10, workZone: 'A' },
@@ -43,16 +45,23 @@ export let products = [
 ]
 
 function App() {
+
+  const [cookies, setCookie] = useCookies(['logged_user', 'token'])
+
+  function loggedIn() {
+    return (cookies.logged_user != undefined && cookies.logged_user != "");
+  }
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Homepage />}></Route>
         <Route path="/stores" element={<Stores />}></Route>
-        <Route path="/account" element={<Account />}></Route>
-        <Route path="/choose_store" element={<ChooseStore />}></Route>
-        <Route path="/store/:id/products" element={<StoreProducts />}></Route>
+        <Route path="/account" element={loggedIn() ? <Account /> : <Navigate to="/login" />}></Route>
+        <Route path="/choose_store" element={loggedIn() ? <ChooseStore /> : <Navigate to="/login" />}></Route>
+        <Route path="/store/:id/products" element={loggedIn() ? <StoreProducts /> : <Navigate to="/login" />}></Route>
         <Route path="/store/:id/info" element={<StoreInfo />}></Route>
-        <Route path="/login" element={<Login />}></Route>
+        <Route path="/login" element={loggedIn() ? <Navigate to="/account" /> : <Login />}></Route>
       </Routes>
     </BrowserRouter>
   );

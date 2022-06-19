@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useCookies } from 'react-cookie';
 import axios from 'axios'
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
@@ -13,15 +13,19 @@ import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import { Form } from 'react-bootstrap';
 
-// Font Awesome
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+// // Font Awesome
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 // CSS
 import SearchBar from '../components/css/SearchBar.css'
 
 const registerEndpoint = 'register';
 const loginEndpoint = 'authenticate';
+
+// function routeChange(path) { 
+//     navigate(path);
+// }
 
 // INPUT FIELDS VALIDATION
 
@@ -50,13 +54,13 @@ function validateUsername(username) {
 }
 
 function validateEmail(email) {
-    // var atSymbol = email.indexOf("@");
-    // if (atSymbol < 1) return false;
+    var atSymbol = email.indexOf("@");
+    if (atSymbol < 1) return false;
 
-    // var dot = email.indexOf(".");
-    // if (dot <= atSymbol + 2) return false;
+    var dot = email.indexOf(".");
+    if (dot <= atSymbol + 2) return false;
 
-    // if (dot === email.length - 1) return false;
+    if (dot === email.length - 1) return false;
 
     return true;
 }
@@ -79,7 +83,7 @@ function validatePassword(password) {
 function Login() {
 
     const [cookies, setCookie] = useCookies(['logged_user', 'token'])
-    console.log("logged_user: ", cookies.logged_user)
+    // console.log("logged_user: ", cookies.logged_user)
 
     const [loginUsername, setLoginUsername] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
@@ -88,6 +92,8 @@ function Login() {
     const [regEmail, setRegEmail] = useState("");
     const [regPassword, setRegPassword] = useState("");
     const [regConfPassword, setRegConfPassword] = useState("");
+
+    let navigate = useNavigate();
 
     function validateRegForm() {
         const validUsername = validateUsername(regUsername);
@@ -154,8 +160,7 @@ function Login() {
                         setCookie('logged_user', loginUsername, { path: '/' })
                         setCookie('token', response.data.token, { path: '/' }) // , maxAge: '3600'
 
-                        // TODO: successful registration
-                        alert('Registration was successful! You\'re already logged in :)')
+                        alert('Registration was successful! Proceed to login :)')
                     }
                     else {
                         alert('There was a problem with your registration. Please try again!')
@@ -183,9 +188,7 @@ function Login() {
                     setCookie('logged_user', loginUsername, { path: '/' })
                     setCookie('token', response.data.token, { path: '/' }) // , maxAge: '3600'
                     alert('Login was successful :)')
-                    console.log("SUCCESSFUL LOGIN!")
-                    console.log("cookie user: ", cookies.logged_user)
-                    console.log("cookie token: ", cookies.token)
+                    navigate('/choose_store');
                 }
                 else {
                     document.getElementById("loginWarning").style.display = 'block'
