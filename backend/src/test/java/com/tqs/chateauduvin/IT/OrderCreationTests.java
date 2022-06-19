@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.tqs.chateauduvin.ChateauduvinApplication;
 import com.tqs.chateauduvin.JsonUtils;
 import com.tqs.chateauduvin.dto.LogInRequestDTO;
@@ -32,6 +33,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.CoreMatchers.is;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -60,6 +66,8 @@ public class OrderCreationTests {
     @Autowired
     private StoreService storeServ;
 
+    private WireMockServer wireMockServer = new WireMockServer(8085);
+
     String token1;
     String token2;
 
@@ -69,6 +77,7 @@ public class OrderCreationTests {
 
     @AfterAll
     public void resetDb() {
+        wireMockServer.stop();
         orderRepository.deleteAll();
         customerRepository.deleteAll();
         wineRepository.deleteAll();
@@ -76,6 +85,11 @@ public class OrderCreationTests {
 
     @BeforeAll
     void setUp() throws IOException, Exception {
+        wireMockServer.start();
+
+        configureFor("localhost", 8085);
+        stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(200).withBody("bees")));
+
         w1 = new Wine("w1", 12.0, "dry;rose", 12.99, 12);
         w2 = new Wine("w2", 12.0, "dry;white", 12.99, 6);
         w3 = new Wine("w3", 12.0, "red", 12.99, 8);

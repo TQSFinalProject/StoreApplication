@@ -160,7 +160,7 @@ public class Order {
             return false;
         }
         Order order = (Order) o;
-        return id == order.id && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(deliveryAddress, order.deliveryAddress) && Objects.equals(estimatedDeliveryTime, order.estimatedDeliveryTime) && Objects.equals(submitedTime, order.submitedTime) && Objects.equals(deliveryTime, order.deliveryTime) && Objects.equals(riderId, order.riderId) && Objects.equals(storeId, order.storeId) && Objects.equals(orderDetails, order.orderDetails) && Objects.equals(phone, order.phone) && Objects.equals(rating, order.rating);
+        return Objects.equals(orderStatus, order.orderStatus) && Objects.equals(deliveryAddress, order.deliveryAddress) && Objects.equals(estimatedDeliveryTime, order.estimatedDeliveryTime) && Objects.equals(submitedTime, order.submitedTime) && Objects.equals(deliveryTime, order.deliveryTime) && Objects.equals(riderId, order.riderId) && Objects.equals(storeId, order.storeId) && Objects.equals(orderDetails, order.orderDetails) && Objects.equals(phone, order.phone) && Objects.equals(rating, order.rating);
     }
 
     @Override
