@@ -16,6 +16,8 @@ services:
         - MYSQL_USER=cdv
         - MYSQL_DATABASE=cdv
         - MYSQL_PASSWORD=chateauduvin2
+      networks:
+        - managementapplication_management_network
 
   cdv:
     depends_on:
@@ -32,6 +34,8 @@ services:
       - spring.datasource.password=chateauduvin2
       - spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
       - spring.jpa.hibernate.ddl-auto=update
+    networks:
+      - managementapplication_management_network
 
   cdv_frontend:
     build:
@@ -45,3 +49,7 @@ services:
 volumes:
   mysql-cdv:
     driver: local
+
+networks:
+  managementapplication_management_network:
+    external: true

@@ -1,5 +1,7 @@
 package com.tqs.chateauduvin.controller;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -11,10 +13,13 @@ import com.tqs.chateauduvin.dto.OrderCreationDTO;
 import com.tqs.chateauduvin.dto.OrderDTO;
 import com.tqs.chateauduvin.dto.WineDTO;
 import com.tqs.chateauduvin.model.Customer;
+import com.tqs.chateauduvin.model.Order;
 import com.tqs.chateauduvin.model.OrderInstance;
 import com.tqs.chateauduvin.model.Wine;
+import com.tqs.chateauduvin.service.HttpRequests;
 import com.tqs.chateauduvin.service.StoreService;
 
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +44,15 @@ public class StoreController {
 
     @Autowired
     private TokenProvider jwtTokenUtil;
+
+    private HttpRequests httpRequests = new HttpRequests();
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test() throws IOException, InterruptedException, ParseException {
+        Order order = new Order("A", "B", null, LocalDateTime.now(), null, null, null, null, "C", null);
+        httpRequests.sendNewOrder(order);
+        return ResponseEntity.ok().build();
+    }
 
     // Orders
 
