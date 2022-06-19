@@ -15,10 +15,7 @@ public class HttpRequests {
             .header("Content-Type", "application/json")
             .POST(BodyPublishers.ofByteArray(JsonUtils.toJson(order)))
             .build();
-        System.out.println("AAAAAAAAAAAA");
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("BBBBBBBBBBBB");
-        System.out.println(response.statusCode());
         if(response.statusCode() != 200) throw new Exception();
 
     }
