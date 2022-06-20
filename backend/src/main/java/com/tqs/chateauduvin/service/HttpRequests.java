@@ -33,7 +33,6 @@ public class HttpRequests {
             .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         if(response.statusCode() == 200 || response.statusCode() == 409) {
-            System.out.println(response.body());
             JSONObject obj = (JSONObject) new JSONParser().parse(response.body());
             Long storeId = (Long) obj.get("id");
             return storeId;

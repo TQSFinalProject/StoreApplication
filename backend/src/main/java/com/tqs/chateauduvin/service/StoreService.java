@@ -178,15 +178,12 @@ public class StoreService implements UserDetailsService {
             }
         }
         Order order = orderDTO.toOrderEntity();
-        System.out.println(order);
         if(storeId == null) {
             storeId = registerShop();
         }
-        System.out.println(storeId);
         order.setStoreId(storeId);
         Map<Long, Integer> orderCart = new HashMap<>(custCart);
         OrderInstance orderInst = new OrderInstance(order, customer, orderCart);
-        System.out.println("A");
         httpRequests.sendNewOrder(URL, order);
         orderInstanceRep.save(orderInst);
         customer.setCart(new HashMap<>());
