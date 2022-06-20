@@ -30,7 +30,7 @@ public class HttpRequests {
     }
 
     public Long registerCDV(String url) throws Exception {
-        StoreDTO chateauDuVin = new StoreDTO("Chateau Du Vin", 1.99, "Universidade de Aveiro, 3810-193 Aveiro");
+        StoreDTO chateauDuVin = new StoreDTO("Chateau Du Vin", 1.99, "Universidade de Aveiro, 3810-193 Aveiro", 40.630692, -8.654120);
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url+"/api/stores"))
             .header("Content-Type", "application/json")
