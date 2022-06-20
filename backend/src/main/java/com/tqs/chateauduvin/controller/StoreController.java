@@ -40,10 +40,17 @@ public class StoreController {
     @Autowired
     private TokenProvider jwtTokenUtil;
 
+    // @GetMapping("/test")
+    // public ResponseEntity<?> test() throws IOException, InterruptedException, ParseException {
+    //     Order order = new Order("A", "B", null, LocalDateTime.now(), null, null, null, null, "C", null);
+    //     httpRequests.sendNewOrder(order);
+    //     return ResponseEntity.ok().build();
+    // }
+
     // Orders
 
     @PostMapping("/orders")
-    public ResponseEntity<OrderDTO> newOrder(@RequestHeader("authorization") String auth, @RequestBody OrderCreationDTO orderCreationDTO) {
+    public ResponseEntity<OrderDTO> newOrder(@RequestHeader("authorization") String auth, @RequestBody OrderCreationDTO orderCreationDTO) throws Exception {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Customer customer = storeServ.getCustomerByUsername(username);

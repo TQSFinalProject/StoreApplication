@@ -1,5 +1,6 @@
 package com.tqs.chateauduvin.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.tqs.chateauduvin.repository.OrderInstanceRepository;
 import com.tqs.chateauduvin.repository.CustomerRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,14 +33,16 @@ import org.springframework.stereotype.Service;
 
 @Service(value = "userService")
 public class StoreService implements UserDetailsService {
-
-    // Order Logic
-    
     @Autowired
     OrderRepository orderRep;
 
     @Autowired
     OrderInstanceRepository orderInstanceRep;
+
+    @Value("${ti.url}")
+    public String URL;
+
+    private HttpRequests httpRequests = new HttpRequests();
 
     // Wine Logic
     
@@ -150,7 +154,7 @@ public class StoreService implements UserDetailsService {
             return wineRep.findByPriceBetweenAndAlcoholBetweenAndTypesContaining(minPrice, maxPrice, minAlc, maxAlc, type, pageable);
     }
 
-    public OrderInstance newOrder(Customer customer, OrderCreationDTO orderDTO) {
+    public OrderInstance newOrder(Customer customer, OrderCreationDTO orderDTO) throws Exception, IOException, InterruptedException {
         Map<Long, Integer> custCart = customer.getCart();
         if(custCart.isEmpty()) throw new NoSuchElementException();
         for(Long wineId : custCart.keySet()) {
@@ -175,6 +179,7 @@ public class StoreService implements UserDetailsService {
         Order order = orderDTO.toOrderEntity();
         Map<Long, Integer> orderCart = new HashMap<>(custCart);
         OrderInstance orderInst = new OrderInstance(order, customer, orderCart);
+        httpRequests.sendNewOrder(URL, order);
         orderInstanceRep.save(orderInst);
         customer.setCart(new HashMap<>());
         customerRep.save(customer);
