@@ -90,7 +90,7 @@ public class OrderCreationTests {
         wireMockServer.start();
 
         configureFor("localhost", 8085);
-        stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(200).withBody("bees")));
+        stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(200)));
         stubFor(post(urlEqualTo("/api/stores")).willReturn(aResponse().withStatus(200).withBody("{\"id\":1}")));
 
         w1 = new Wine("w1", 12.0, "dry;rose", 12.99, 12);
@@ -203,6 +203,8 @@ public class OrderCreationTests {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isEmpty());
 
+        stubFor(post(urlEqualTo("/api/stores")).willReturn(aResponse().withStatus(409).withBody("{\"id\":1}")));
+
         OrderCreationDTO newOrder2 = new OrderCreationDTO("exampleAddress2", "some other details", "989898989");
         mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token1)
         .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder2)))
@@ -257,6 +259,14 @@ public class OrderCreationTests {
         stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(404)));
 
         OrderCreationDTO newOrder4 = new OrderCreationDTO("exampleAddress4", "some other other other details", "999959999");
+        mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token2)
+        .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder4)))
+        .andExpect(status().is(500));
+
+        storeServ.storeId = null;
+        stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(200)));
+        stubFor(post(urlEqualTo("/api/stores")).willReturn(aResponse().withStatus(500)));
+
         mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token2)
         .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder4)))
         .andExpect(status().is(500));

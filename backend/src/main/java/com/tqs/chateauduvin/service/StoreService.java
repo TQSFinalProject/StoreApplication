@@ -43,7 +43,7 @@ public class StoreService implements UserDetailsService {
 
     private HttpRequests httpRequests = new HttpRequests();
 
-    private Long storeId;
+    public Long storeId;
 
     // Wine Logic
     
