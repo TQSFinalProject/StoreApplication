@@ -1,6 +1,5 @@
 package com.tqs.chateauduvin.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +42,8 @@ public class StoreService implements UserDetailsService {
     public String URL;
 
     private HttpRequests httpRequests = new HttpRequests();
+
+    public Long storeId;
 
     // Wine Logic
     
@@ -154,7 +155,7 @@ public class StoreService implements UserDetailsService {
             return wineRep.findByPriceBetweenAndAlcoholBetweenAndTypesContaining(minPrice, maxPrice, minAlc, maxAlc, type, pageable);
     }
 
-    public OrderInstance newOrder(Customer customer, OrderCreationDTO orderDTO) throws Exception, IOException, InterruptedException {
+    public OrderInstance newOrder(Customer customer, OrderCreationDTO orderDTO) throws Exception {
         Map<Long, Integer> custCart = customer.getCart();
         if(custCart.isEmpty()) throw new NoSuchElementException();
         for(Long wineId : custCart.keySet()) {
@@ -177,6 +178,10 @@ public class StoreService implements UserDetailsService {
             }
         }
         Order order = orderDTO.toOrderEntity();
+        if(storeId == null) {
+            storeId = registerShop();
+        }
+        order.setStoreId(storeId);
         Map<Long, Integer> orderCart = new HashMap<>(custCart);
         OrderInstance orderInst = new OrderInstance(order, customer, orderCart);
         httpRequests.sendNewOrder(URL, order);
@@ -184,6 +189,10 @@ public class StoreService implements UserDetailsService {
         customer.setCart(new HashMap<>());
         customerRep.save(customer);
         return orderInst;
+    }
+
+    private Long registerShop() throws Exception {
+        return httpRequests.registerCDV(URL);
     }
 
     public List<OrderDTO> getCustomerOrders(Customer customer) {
