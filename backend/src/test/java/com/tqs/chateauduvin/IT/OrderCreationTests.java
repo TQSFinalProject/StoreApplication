@@ -68,6 +68,8 @@ public class OrderCreationTests {
 
     private WireMockServer wireMockServer = new WireMockServer(8085);
 
+    Customer cust2;
+
     String token1;
     String token2;
 
@@ -108,7 +110,7 @@ public class OrderCreationTests {
         JSONObject tokenJSON1 = new JSONObject(result1.getResponse().getContentAsString());
         token1 = tokenJSON1.getString("token");
 
-        Customer cust2 = new Customer("Jess", "929292929", "Jessica123", "jess00"); 
+        cust2 = new Customer("Jess", "929292929", "Jessica123", "jess00"); 
         Map<Long,Integer> cart2 = new HashMap<>();
         cart2.put(w1.getId(), 1);
         cart2.put(w2.getId(), 2);
@@ -240,6 +242,23 @@ public class OrderCreationTests {
     void whenGettingUnexistentOrder_notFound() throws Exception {
         mvc.perform(get("/api/orders/1234").header("Authorization", "Bearer "+token1))
         .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Order(8)
+    void whenBadResponseFromExternalAPI_orderCancelled() throws Exception {
+        Map<Long,Integer> cart2 = new HashMap<>();
+        cart2.put(w1.getId(), 1);
+        cust2.setCart(cart2);
+        storeServ.saveCustomer(cust2);
+
+        configureFor("localhost", 8085);
+        stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(404)));
+
+        OrderCreationDTO newOrder4 = new OrderCreationDTO("exampleAddress4", "some other other other details", "999959999");
+        mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token2)
+        .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder4)))
+        .andExpect(status().is(500));
     }
     
 }
