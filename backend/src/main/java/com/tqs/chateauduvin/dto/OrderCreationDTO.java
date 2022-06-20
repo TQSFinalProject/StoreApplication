@@ -6,15 +6,19 @@ import com.tqs.chateauduvin.model.Order;
 
 public class OrderCreationDTO {
     public String deliveryAddress;
+    public Double deliveryLat;
+    public Double deliveryLong;
     public String orderDetails;
     public String phone;
 
     public Order toOrderEntity() {
-        return new Order("created", deliveryAddress, null, LocalDateTime.now(), null, null, null, orderDetails, phone, null);
+        return new Order("created", deliveryAddress, deliveryLat, deliveryLong,null, LocalDateTime.now(), null, null, null, orderDetails, phone, null);
     }
 
-    public OrderCreationDTO(String deliveryAddress, String orderDetails, String phone) {
+    public OrderCreationDTO(String deliveryAddress, Double deliveryLat, Double deliveryLong, String orderDetails, String phone) {
         this.deliveryAddress = deliveryAddress;
+        this.deliveryLat = deliveryLat;
+        this.deliveryLong = deliveryLong;
         this.orderDetails = orderDetails;
         this.phone = phone;
     }

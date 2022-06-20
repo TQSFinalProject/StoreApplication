@@ -23,6 +23,12 @@ public class Order {
     @Column(name = "delivery_address", nullable = false)
     private String deliveryAddress;
 
+    @Column(name = "delivery_lat", nullable = false)
+    private Double deliveryLat;
+
+    @Column(name = "delivery_long", nullable = false)
+    private Double deliveryLong;
+
     @Column(name = "estimated_delivery_time")
     private LocalDateTime estimatedDeliveryTime;
 
@@ -49,9 +55,11 @@ public class Order {
 
     public Order() {}
 
-    public Order(String orderStatus, String deliveryAddress, LocalDateTime estimatedDeliveryTime, LocalDateTime submitedTime, LocalDateTime deliveryTime, Long riderId, Long storeId, String orderDetails, String phone, Double rating) {
+    public Order(String orderStatus, String deliveryAddress, Double deliveryLat, Double deliveryLong, LocalDateTime estimatedDeliveryTime, LocalDateTime submitedTime, LocalDateTime deliveryTime, Long riderId, Long storeId, String orderDetails, String phone, Double rating) {
         this.orderStatus = orderStatus;
         this.deliveryAddress = deliveryAddress;
+        this.deliveryLat = deliveryLat;
+        this.deliveryLong = deliveryLong;
         this.estimatedDeliveryTime = estimatedDeliveryTime;
         this.submitedTime = submitedTime;
         this.deliveryTime = deliveryTime;
@@ -150,7 +158,21 @@ public class Order {
         this.rating = rating;
     }
 
-    
+    public Double getDeliveryLat() {
+        return this.deliveryLat;
+    }
+
+    public void setDeliveryLat(Double deliveryLat) {
+        this.deliveryLat = deliveryLat;
+    }
+
+    public Double getDeliveryLong() {
+        return this.deliveryLong;
+    }
+
+    public void setDeliveryLong(Double deliveryLong) {
+        this.deliveryLong = deliveryLong;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -160,15 +182,13 @@ public class Order {
             return false;
         }
         Order order = (Order) o;
-        return Objects.equals(orderStatus, order.orderStatus) && Objects.equals(deliveryAddress, order.deliveryAddress) && Objects.equals(estimatedDeliveryTime, order.estimatedDeliveryTime) && Objects.equals(submitedTime, order.submitedTime) && Objects.equals(deliveryTime, order.deliveryTime) && Objects.equals(riderId, order.riderId) && Objects.equals(storeId, order.storeId) && Objects.equals(orderDetails, order.orderDetails) && Objects.equals(phone, order.phone) && Objects.equals(rating, order.rating);
+        return Objects.equals(orderStatus, order.orderStatus) && Objects.equals(deliveryAddress, order.deliveryAddress) && Objects.equals(deliveryLat, order.deliveryLat) && Objects.equals(deliveryLong, order.deliveryLong) && Objects.equals(estimatedDeliveryTime, order.estimatedDeliveryTime) && Objects.equals(submitedTime, order.submitedTime) && Objects.equals(deliveryTime, order.deliveryTime) && Objects.equals(riderId, order.riderId) && Objects.equals(storeId, order.storeId) && Objects.equals(orderDetails, order.orderDetails) && Objects.equals(phone, order.phone) && Objects.equals(rating, order.rating);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderStatus, deliveryAddress, estimatedDeliveryTime, submitedTime, deliveryTime, riderId, storeId, orderDetails, phone, rating);
+        return Objects.hash(id, orderStatus, deliveryAddress, deliveryLat, deliveryLong, estimatedDeliveryTime, submitedTime, deliveryTime, riderId, storeId, orderDetails, phone, rating);
     }
-
-
 
     @Override
     public String toString() {
@@ -176,6 +196,8 @@ public class Order {
             " id='" + getId() + "'" +
             ", orderStatus='" + getOrderStatus() + "'" +
             ", deliveryAddress='" + getDeliveryAddress() + "'" +
+            ", deliveryLat='" + getDeliveryLat() + "'" +
+            ", deliveryLong='" + getDeliveryLong() + "'" +
             ", estimatedDeliveryTime='" + getEstimatedDeliveryTime() + "'" +
             ", submitedTime='" + getSubmitedTime() + "'" +
             ", deliveryTime='" + getDeliveryTime() + "'" +
@@ -186,6 +208,5 @@ public class Order {
             ", rating='" + getRating() + "'" +
             "}";
     }
-
 
 }

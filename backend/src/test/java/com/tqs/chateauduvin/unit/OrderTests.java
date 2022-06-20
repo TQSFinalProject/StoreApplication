@@ -13,11 +13,11 @@ public class OrderTests {
     
     @Test
     public void testOrderEquals() {
-        Order order1 = new Order("A", "B", LocalDateTime.of(2001, 2, 27, 0, 0), LocalDateTime.of(2002, 2, 27, 0, 0), LocalDateTime.of(2003, 2, 27, 0, 0), 1L, 1L, "C", "D", 2.0);
+        Order order1 = new Order("A", "B", 10.0, 10.0, LocalDateTime.of(2001, 2, 27, 0, 0), LocalDateTime.of(2002, 2, 27, 0, 0), LocalDateTime.of(2003, 2, 27, 0, 0), 1L, 1L, "C", "D", 2.0);
         order1.setId(2L);
-        Order order2 = new Order("A", "B", LocalDateTime.of(2001, 2, 27, 0, 0), LocalDateTime.of(2002, 2, 27, 0, 0), LocalDateTime.of(2003, 2, 27, 0, 0), 1L, 1L, "C", "D", 2.0);
+        Order order2 = new Order("A", "B", 10.0, 10.0, LocalDateTime.of(2001, 2, 27, 0, 0), LocalDateTime.of(2002, 2, 27, 0, 0), LocalDateTime.of(2003, 2, 27, 0, 0), 1L, 1L, "C", "D", 2.0);
         order2.setId(1L);
-        Order order3 = new Order("B", "B", LocalDateTime.of(2001, 2, 27, 0, 0), LocalDateTime.of(2002, 2, 27, 0, 0), LocalDateTime.of(2003, 2, 27, 0, 0), 1L, 1L, "C", "D", 2.0);
+        Order order3 = new Order("B", "B", 10.0, 10.0, LocalDateTime.of(2001, 2, 27, 0, 0), LocalDateTime.of(2002, 2, 27, 0, 0), LocalDateTime.of(2003, 2, 27, 0, 0), 1L, 1L, "C", "D", 2.0);
     
         // Order 1 and 2 are identical except for the id
         System.out.println(order1.getId() + " " + order2.getId());

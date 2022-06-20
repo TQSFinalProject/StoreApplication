@@ -154,7 +154,7 @@ public class OrderCreationTests {
         stubFor(post(urlEqualTo("/api/stores")).willReturn(aResponse().withStatus(200).withBody("{\"id\":1}")));
 
         // Bob creates a new order, recieving the proper order instance back
-        OrderCreationDTO newOrder = new OrderCreationDTO("exampleAddress", "some details", "989898989");
+        OrderCreationDTO newOrder = new OrderCreationDTO("exampleAddress", 10.0, 10.0, "some details", "989898989");
         mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token1)
         .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder)))
         .andExpect(status().isOk())
@@ -206,7 +206,7 @@ public class OrderCreationTests {
 
         stubFor(post(urlEqualTo("/api/stores")).willReturn(aResponse().withStatus(409).withBody("{\"id\":1}")));
 
-        OrderCreationDTO newOrder2 = new OrderCreationDTO("exampleAddress2", "some other details", "989898989");
+        OrderCreationDTO newOrder2 = new OrderCreationDTO("exampleAddress2", 10.0, 10.0, "some other details", "989898989");
         mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token1)
         .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder2)))
         .andExpect(status().isNotFound());
@@ -215,7 +215,7 @@ public class OrderCreationTests {
     @Test
     @Order(5)
     void withManyUsersOrders_gettingOrders_returnsOnlyUserOrders() throws Exception {
-        OrderCreationDTO newOrder3 = new OrderCreationDTO("exampleAddress3", "some other other details", "999999999");
+        OrderCreationDTO newOrder3 = new OrderCreationDTO("exampleAddress3", 10.0, 10.0, "some other other details", "999999999");
         mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token2)
         .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder3)))
         .andExpect(status().isOk());
@@ -259,7 +259,7 @@ public class OrderCreationTests {
         configureFor("localhost", 8085);
         stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(404)));
 
-        OrderCreationDTO newOrder4 = new OrderCreationDTO("exampleAddress4", "some other other other details", "999959999");
+        OrderCreationDTO newOrder4 = new OrderCreationDTO("exampleAddress4", 10.0, 10.0, "some other other other details", "999959999");
         mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token2)
         .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder4)))
         .andExpect(status().is(500));
