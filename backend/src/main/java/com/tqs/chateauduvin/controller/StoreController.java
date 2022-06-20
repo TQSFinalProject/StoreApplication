@@ -50,14 +50,15 @@ public class StoreController {
     // Orders
 
     @PostMapping("/orders")
-    public ResponseEntity<OrderDTO> newOrder(@RequestHeader("authorization") String auth, @RequestBody OrderCreationDTO orderCreationDTO) throws Exception {
+    public ResponseEntity<Map<String,Object>> newOrder(@RequestHeader("authorization") String auth, @RequestBody OrderCreationDTO orderCreationDTO) throws Exception {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Customer customer = storeServ.getCustomerByUsername(username);
         try{ 
-            OrderInstance order = storeServ.newOrder(customer, orderCreationDTO);
-            OrderDTO orderDTO = OrderDTO.fromOrderInstanceEntity(order);
-            return ResponseEntity.ok().body(orderDTO);
+            Map<String,Object> ret = storeServ.newOrder(customer, orderCreationDTO);
+            OrderDTO orderDTO = OrderDTO.fromOrderInstanceEntity((OrderInstance)ret.get("order"));
+            ret.put("order", orderDTO);
+            return ResponseEntity.ok().body(ret);
         } catch(NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }

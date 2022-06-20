@@ -13,7 +13,7 @@ import com.tqs.chateauduvin.dto.StoreDTO;
 import com.tqs.chateauduvin.model.Order;
 
 public class HttpRequests {
-    public void sendNewOrder(String url, Order order) throws Exception {
+    public Long sendNewOrder(String url, Order order) throws Exception {
         System.out.println(order);
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url+"/api/orders"))
@@ -22,6 +22,11 @@ public class HttpRequests {
             .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         if(response.statusCode() != 200) throw new Exception();
+        else {
+            JSONObject obj = (JSONObject) new JSONParser().parse(response.body());
+            Long orderId = (Long) obj.get("id");
+            return orderId;
+        }
     }
 
     public Long registerCDV(String url) throws Exception {

@@ -155,7 +155,7 @@ public class StoreService implements UserDetailsService {
             return wineRep.findByPriceBetweenAndAlcoholBetweenAndTypesContaining(minPrice, maxPrice, minAlc, maxAlc, type, pageable);
     }
 
-    public OrderInstance newOrder(Customer customer, OrderCreationDTO orderDTO) throws Exception {
+    public Map<String,Object> newOrder(Customer customer, OrderCreationDTO orderDTO) throws Exception {
         Map<Long, Integer> custCart = customer.getCart();
         if(custCart.isEmpty()) throw new NoSuchElementException();
         for(Long wineId : custCart.keySet()) {
@@ -184,11 +184,14 @@ public class StoreService implements UserDetailsService {
         order.setStoreId(storeId);
         Map<Long, Integer> orderCart = new HashMap<>(custCart);
         OrderInstance orderInst = new OrderInstance(order, customer, orderCart);
-        httpRequests.sendNewOrder(URL, order);
+        Long orderId = httpRequests.sendNewOrder(URL, order);
         orderInstanceRep.save(orderInst);
         customer.setCart(new HashMap<>());
         customerRep.save(customer);
-        return orderInst;
+        Map<String, Object> ret = new HashMap<>();
+        ret.put("order", orderInst);
+        ret.put("mgmtOrderId", orderId);
+        return ret;
     }
 
     private Long registerShop() throws Exception {

@@ -89,10 +89,6 @@ public class OrderCreationTests {
     void setUp() throws IOException, Exception {
         wireMockServer.start();
 
-        configureFor("localhost", 8085);
-        stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(200)));
-        stubFor(post(urlEqualTo("/api/stores")).willReturn(aResponse().withStatus(200).withBody("{\"id\":1}")));
-
         w1 = new Wine("w1", 12.0, "dry;rose", 12.99, 12);
         w2 = new Wine("w2", 12.0, "dry;white", 12.99, 6);
         w3 = new Wine("w3", 12.0, "red", 12.99, 8);
@@ -153,21 +149,26 @@ public class OrderCreationTests {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.stock", is(8)));
 
+        configureFor("localhost", 8085);
+        stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(200).withBody("{\"id\":1}")));
+        stubFor(post(urlEqualTo("/api/stores")).willReturn(aResponse().withStatus(200).withBody("{\"id\":1}")));
+
         // Bob creates a new order, recieving the proper order instance back
         OrderCreationDTO newOrder = new OrderCreationDTO("exampleAddress", "some details", "989898989");
         mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token1)
         .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.order.orderStatus", is("created")))
-        .andExpect(jsonPath("$.order.deliveryAddress", is("exampleAddress")))
-        .andExpect(jsonPath("$.order.orderDetails", is("some details")))
-        .andExpect(jsonPath("$.order.phone", is("989898989")))
-        .andExpect(jsonPath("$.customer.name", is("Bob")))
-        .andExpect(jsonPath("$.customer.username", is("BobPancakes123")))
-        .andExpect(jsonPath("$.customer.phone", is("919191919")))
-        .andExpect(jsonPath("$.customer.password").doesNotExist())
-        .andExpect(jsonPath("$.cart."+w1.getId(), is(5)))
-        .andExpect(jsonPath("$.cart."+w2.getId(), is(3)));
+        .andExpect(jsonPath("$.order.order.orderStatus", is("created")))
+        .andExpect(jsonPath("$.order.order.deliveryAddress", is("exampleAddress")))
+        .andExpect(jsonPath("$.order.order.orderDetails", is("some details")))
+        .andExpect(jsonPath("$.order.order.phone", is("989898989")))
+        .andExpect(jsonPath("$.order.customer.name", is("Bob")))
+        .andExpect(jsonPath("$.order.customer.username", is("BobPancakes123")))
+        .andExpect(jsonPath("$.order.customer.phone", is("919191919")))
+        .andExpect(jsonPath("$.order.customer.password").doesNotExist())
+        .andExpect(jsonPath("$.mgmtOrderId", is(1)))
+        .andExpect(jsonPath("$.order.cart."+w1.getId(), is(5)))
+        .andExpect(jsonPath("$.order.cart."+w2.getId(), is(3)));
     }
 
     @Test
