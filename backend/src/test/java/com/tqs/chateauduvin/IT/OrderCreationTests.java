@@ -91,6 +91,7 @@ public class OrderCreationTests {
 
         configureFor("localhost", 8085);
         stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(200).withBody("bees")));
+        stubFor(post(urlEqualTo("/api/stores")).willReturn(aResponse().withStatus(200).withBody("{\"id\":1}")));
 
         w1 = new Wine("w1", 12.0, "dry;rose", 12.99, 12);
         w2 = new Wine("w2", 12.0, "dry;white", 12.99, 6);
