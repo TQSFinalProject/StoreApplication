@@ -17,6 +17,5 @@ public class HttpRequests {
             .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         if(response.statusCode() != 200) throw new Exception();
-
     }
 }
