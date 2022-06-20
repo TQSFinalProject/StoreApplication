@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.time.LocalDateTime;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.tqs.chateauduvin.model.Order;
 
