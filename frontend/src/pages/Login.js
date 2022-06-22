@@ -54,13 +54,13 @@ function validateUsername(username) {
 }
 
 function validateEmail(email) {
-    var atSymbol = email.indexOf("@");
-    if (atSymbol < 1) return false;
+    // var atSymbol = email.indexOf("@");
+    // if (atSymbol < 1) return false;
 
-    var dot = email.indexOf(".");
-    if (dot <= atSymbol + 2) return false;
+    // var dot = email.indexOf(".");
+    // if (dot <= atSymbol + 2) return false;
 
-    if (dot === email.length - 1) return false;
+    // if (dot === email.length - 1) return false;
 
     return true;
 }
@@ -188,7 +188,7 @@ function Login() {
                     setCookie('logged_user', loginUsername, { path: '/' })
                     setCookie('token', response.data.token, { path: '/' }) // , maxAge: '3600'
                     alert('Login was successful :)')
-                    navigate('/choose_store');
+                    navigate('/');
                 }
                 else {
                     document.getElementById("loginWarning").style.display = 'block'
