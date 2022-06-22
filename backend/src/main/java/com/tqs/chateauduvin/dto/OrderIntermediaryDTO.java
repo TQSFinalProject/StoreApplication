@@ -3,16 +3,16 @@ package com.tqs.chateauduvin.dto;
 import com.tqs.chateauduvin.model.Order;
 
 public class OrderIntermediaryDTO {
-    private long id;
-    private String orderStatus;
-    private String deliveryAddress;
-    private Double deliveryLat;
-    private Double deliveryLong;
-    private Long riderId;
-    private Long storeId;
-    private String orderDetails;
-    private String phone;
-    private Double rating;
+    public long id;
+    public String orderStatus;
+    public String deliveryAddress;
+    public Double deliveryLat;
+    public Double deliveryLong;
+    public Long riderId;
+    public Long storeId;
+    public String orderDetails;
+    public String phone;
+    public Double rating;
 
     public OrderIntermediaryDTO() {}
 
