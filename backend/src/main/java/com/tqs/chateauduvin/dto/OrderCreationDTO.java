@@ -12,7 +12,7 @@ public class OrderCreationDTO {
     public String phone;
 
     public Order toOrderEntity() {
-        return new Order("created", deliveryAddress, deliveryLat, deliveryLong,null, LocalDateTime.now(), null, null, null, orderDetails, phone, null);
+        return new Order("", deliveryAddress, deliveryLat, deliveryLong,null, LocalDateTime.now(), null, null, null, orderDetails, phone, null);
     }
 
     public OrderCreationDTO(String deliveryAddress, Double deliveryLat, Double deliveryLong, String orderDetails, String phone) {

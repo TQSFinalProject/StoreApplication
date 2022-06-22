@@ -70,6 +70,11 @@ public class Order {
         this.rating = rating;
     }
 
+    public Order(Long id, String orderStatus, String deliveryAddress, Double deliveryLat, Double deliveryLong, LocalDateTime estimatedDeliveryTime, LocalDateTime submitedTime, LocalDateTime deliveryTime, Long riderId, Long storeId, String orderDetails, String phone, Double rating) {
+        this(orderStatus, deliveryAddress, deliveryLat, deliveryLong, estimatedDeliveryTime, submitedTime, deliveryTime, riderId, storeId, orderDetails, phone, rating);
+        this.id = id;
+    }
+
     public long getId() {
         return this.id;
     }

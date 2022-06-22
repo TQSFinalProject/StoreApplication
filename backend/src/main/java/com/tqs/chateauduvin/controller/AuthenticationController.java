@@ -36,7 +36,7 @@ public class AuthenticationController {
     @Autowired
     private StoreService storeServ;
 
-    @PostMapping("/authenticate")
+    @PostMapping("/authentication")
     public ResponseEntity<?> generateToken(@RequestBody LogInRequestDTO loginrequest) throws AuthenticationException {
 
         final Authentication authentication = authenticationManager.authenticate(
@@ -50,7 +50,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new AuthTokenDTO(token));
     }
 
-    @PostMapping("/register")
+    @PostMapping("/registration")
     public ResponseEntity<String> saveCustomer(@RequestBody CustomerCreationDTO cust){
         Boolean bool = storeServ.getCustomerByUsername(cust.getUsername()) != null;
         if(bool) return ResponseEntity.status(409).body("Username already in use.");

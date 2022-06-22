@@ -10,16 +10,18 @@ public class OrderDTO {
     private Order order;
     private CustomerDTO customer;
     private Map<Long, Integer> cart;
+    private Long mgmtOrderId;
 
     public static OrderDTO fromOrderInstanceEntity(OrderInstance orderInst) {
-        return new OrderDTO(orderInst.getId(), orderInst.getOrder(), CustomerDTO.fromCustomerEntity(orderInst.getCustomer()), orderInst.getCart());
+        return new OrderDTO(orderInst.getId(), orderInst.getOrder(), CustomerDTO.fromCustomerEntity(orderInst.getCustomer()), orderInst.getCart(), orderInst.getMgmtOrderId());
     }
 
-    public OrderDTO(Long id, Order order, CustomerDTO customer, Map<Long,Integer> cart) {
+    public OrderDTO(Long id, Order order, CustomerDTO customer, Map<Long,Integer> cart, Long mgmtOrderId) {
         this.id = id;
         this.order = order;
         this.customer = customer;
         this.cart = cart;
+        this.mgmtOrderId = mgmtOrderId;
     }
 
 
@@ -55,4 +57,11 @@ public class OrderDTO {
         this.cart = cart;
     }
 
+    public Long getMgmtOrderId() {
+        return this.mgmtOrderId;
+    }
+
+    public void setMgmtOrderId(Long mgmtOrderId) {
+        this.mgmtOrderId = mgmtOrderId;
+    }
 }
