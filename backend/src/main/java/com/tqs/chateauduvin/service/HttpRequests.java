@@ -20,11 +20,16 @@ import com.tqs.chateauduvin.dto.StoreDTO;
 import com.tqs.chateauduvin.model.Order;
 
 public class HttpRequests {
+    private static final String contType = "Content-Type";
+    private static final String appJson = "application/json";
+    private static final String estDelTime = "estimatedDeliveryTime";
+    private static final String delTime = "deliveryTime";
+
     public Order sendNewOrder(String url, Order order, String username, String password) throws Exception {
         String token = getToken(url, username, password);
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url+"/api/store/order"))
-            .header("Content-Type", "application/json")
+            .header(contType, appJson)
             .header("Authorization", "Bearer "+token)
             .POST(BodyPublishers.ofByteArray(JsonUtils.toJson(order)))
             .build();
@@ -34,11 +39,11 @@ public class HttpRequests {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 JSONObject obj = (JSONObject) new JSONParser().parse(response.body());
-                LocalDateTime estimatedDeliveryTime = obj.get("estimatedDeliveryTime") == null ? null : LocalDateTime.parse((String)obj.remove("estimatedDeliveryTime"));
-                LocalDateTime deliveryTime = obj.get("deliveryTime") == null ? null : LocalDateTime.parse((String)obj.remove("deliveryTime"));
+                LocalDateTime estimatedDeliveryTime = obj.get(estDelTime) == null ? null : LocalDateTime.parse((String)obj.remove(estDelTime));
+                LocalDateTime deliveryTime = obj.get(delTime) == null ? null : LocalDateTime.parse((String)obj.remove(delTime));
                 LocalDateTime submitedTime = LocalDateTime.parse((String)obj.remove("submitedTime"));
-                if(deliveryTime == null) obj.remove("deliveryTime");
-                if(estimatedDeliveryTime == null) obj.remove("estimatedDeliveryTime");
+                if(deliveryTime == null) obj.remove(delTime);
+                if(estimatedDeliveryTime == null) obj.remove(estimatedDeliveryTime);
                 OrderIntermediaryDTO tempOrder = mapper.readValue(obj.toJSONString(), OrderIntermediaryDTO.class);
                 Order orderResponse = tempOrder.toOrderEntity();
                 orderResponse.setEstimatedDeliveryTime(estimatedDeliveryTime);
@@ -59,7 +64,7 @@ public class HttpRequests {
         StoreDTO chateauDuVin = new StoreDTO("Chateau Du Vin", 1.99, "Universidade de Aveiro, 3810-193 Aveiro", 40.630692, -8.654120, password, username);
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url+"/registration/store"))
-            .header("Content-Type", "application/json")
+            .header(contType, appJson)
             .POST(BodyPublishers.ofByteArray(JsonUtils.toJson(chateauDuVin)))
             .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
@@ -67,7 +72,7 @@ public class HttpRequests {
             LogInRequestDTO req = new LogInRequestDTO(username, password);
             HttpRequest request2 = HttpRequest.newBuilder()
             .uri(URI.create(url+"/authentication"))
-            .header("Content-Type", "application/json")
+            .header(contType, appJson)
             .POST(BodyPublishers.ofByteArray(JsonUtils.toJson(req)))
             .build();
             HttpResponse<String> response2 = HttpClient.newHttpClient().send(request2, HttpResponse.BodyHandlers.ofString());
