@@ -36,6 +36,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
@@ -242,9 +243,23 @@ public class OrderCreationTests {
     @Test
     @Order(6)
     void whenGettingSpecificOrder_getSpecificOrder() throws Exception {
+        String orderBody = "{\"order\": {" + 
+        "\"id\":123" +
+        "\"orderStatus\":\"requested\"" +
+        "\"deliveryAddress\":\"exampleAddress\"" +
+        "\"deliveryLat\":10.0" +
+        "\"deliveryLong\":10.0" +
+        "\"orderDetails\":\"some details\"" +
+        "\"phone\":\"989898989\"" +
+        "\"submitedTime\":\"2022-06-22T15:24:18\"}" +
+        "\"rider\": null" + 
+        "}";
+
+        stubFor(get(urlEqualTo("/api/store/order/123")).willReturn(aResponse().withStatus(200).withBody(orderBody)));
+
         mvc.perform(get("/api/orders/1").header("Authorization", "Bearer "+token1))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.id", is(1)));
+        .andExpect(jsonPath("$.order.id", is(1)));
     }
 
     @Test

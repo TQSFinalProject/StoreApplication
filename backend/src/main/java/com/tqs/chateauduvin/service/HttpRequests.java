@@ -7,6 +7,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -43,13 +45,54 @@ public class HttpRequests {
                 LocalDateTime deliveryTime = obj.get(delTime) == null ? null : LocalDateTime.parse((String)obj.remove(delTime));
                 LocalDateTime submitedTime = LocalDateTime.parse((String)obj.remove("submitedTime"));
                 if(deliveryTime == null) obj.remove(delTime);
-                if(estimatedDeliveryTime == null) obj.remove(estimatedDeliveryTime);
+                if(estimatedDeliveryTime == null) obj.remove(estDelTime);
                 OrderIntermediaryDTO tempOrder = mapper.readValue(obj.toJSONString(), OrderIntermediaryDTO.class);
                 Order orderResponse = tempOrder.toOrderEntity();
                 orderResponse.setEstimatedDeliveryTime(estimatedDeliveryTime);
                 orderResponse.setDeliveryTime(deliveryTime);
                 orderResponse.setSubmitedTime(submitedTime);
                 return orderResponse;
+            } catch (JsonGenerationException e) {
+                throw e;
+            } catch (JsonMappingException e) {
+                throw e;
+            } catch (IOException e) {
+                throw e;
+            } 
+        }
+    }
+
+    public Map<String,Object> getOrderById(String url, Long mgmtOrderId, String username, String password) throws Exception {
+        String token = getToken(url, username, password);
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url+"/api/store/order/"+mgmtOrderId))
+            .header(contType, appJson)
+            .header("Authorization", "Bearer "+token)
+            .GET()
+            .build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        if(response.statusCode() != 200) throw new Exception();
+        else {
+            System.out.println(response.body());
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                JSONObject responseJSON = (JSONObject) new JSONParser().parse(response.body());
+                JSONObject obj = (JSONObject) responseJSON.get("order");
+                LocalDateTime estimatedDeliveryTime = obj.get(estDelTime) == null ? null : LocalDateTime.parse((String)obj.remove(estDelTime));
+                LocalDateTime deliveryTime = obj.get(delTime) == null ? null : LocalDateTime.parse((String)obj.remove(delTime));
+                LocalDateTime submitedTime = LocalDateTime.parse((String)obj.remove("submitedTime"));
+                if(deliveryTime == null) obj.remove(delTime);
+                if(estimatedDeliveryTime == null) obj.remove(estDelTime);
+                OrderIntermediaryDTO tempOrder = mapper.readValue(obj.toJSONString(), OrderIntermediaryDTO.class);
+                Order orderResponse = tempOrder.toOrderEntity();
+                orderResponse.setEstimatedDeliveryTime(estimatedDeliveryTime);
+                orderResponse.setDeliveryTime(deliveryTime);
+                orderResponse.setSubmitedTime(submitedTime);
+                JSONObject rider = (JSONObject) responseJSON.get("rider");
+                Map<String,Object> ret = new HashMap<>();
+                ret.put("order", orderResponse);
+                ret.put("rider", rider);
+                return ret;
             } catch (JsonGenerationException e) {
                 throw e;
             } catch (JsonMappingException e) {
