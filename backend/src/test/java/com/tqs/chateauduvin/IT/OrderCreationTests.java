@@ -103,7 +103,7 @@ public class OrderCreationTests {
         cust1.setCart(cart1);
         storeServ.saveCustomer(cust1);
         LogInRequestDTO req1 = new LogInRequestDTO("BobPancakes123", "bobby99");
-        MvcResult result1 = mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req1))).andReturn();
+        MvcResult result1 = mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req1))).andReturn();
         JSONObject tokenJSON1 = new JSONObject(result1.getResponse().getContentAsString());
         token1 = tokenJSON1.getString("token");
 
@@ -115,7 +115,7 @@ public class OrderCreationTests {
         cust2.setCart(cart2);
         storeServ.saveCustomer(cust2);
         LogInRequestDTO req2 = new LogInRequestDTO("Jessica123", "jess00");
-        MvcResult result2 = mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req2))).andReturn();
+        MvcResult result2 = mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req2))).andReturn();
         JSONObject tokenJSON2 = new JSONObject(result2.getResponse().getContentAsString());
         token2 = tokenJSON2.getString("token");
     }
@@ -150,25 +150,38 @@ public class OrderCreationTests {
         .andExpect(jsonPath("$.stock", is(8)));
 
         configureFor("localhost", 8085);
-        stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(200).withBody("{\"id\":1}")));
-        stubFor(post(urlEqualTo("/api/stores")).willReturn(aResponse().withStatus(200).withBody("{\"id\":1}")));
+
+        String orderBody = "{" + 
+        "\"id\":123" +
+        "\"orderStatus\":\"requested\"" +
+        "\"deliveryAddress\":\"exampleAddress\"" +
+        "\"deliveryLat\":10.0" +
+        "\"deliveryLong\":10.0" +
+        "\"orderDetails\":\"some details\"" +
+        "\"phone\":\"989898989\"" +
+        "\"submitedTime\":\"2022-06-22T15:24:18\"" +
+        "}";
+
+        stubFor(post(urlEqualTo("/api/store/order")).willReturn(aResponse().withStatus(200).withBody(orderBody)));
+        stubFor(post(urlEqualTo("/registration/store")).willReturn(aResponse().withStatus(200)));
+        stubFor(post(urlEqualTo("/authentication")).willReturn(aResponse().withStatus(200).withBody("{\"token\":\"sometoken\"}")));
 
         // Bob creates a new order, recieving the proper order instance back
         OrderCreationDTO newOrder = new OrderCreationDTO("exampleAddress", 10.0, 10.0, "some details", "989898989");
         mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token1)
         .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.order.order.orderStatus", is("created")))
-        .andExpect(jsonPath("$.order.order.deliveryAddress", is("exampleAddress")))
-        .andExpect(jsonPath("$.order.order.orderDetails", is("some details")))
-        .andExpect(jsonPath("$.order.order.phone", is("989898989")))
-        .andExpect(jsonPath("$.order.customer.name", is("Bob")))
-        .andExpect(jsonPath("$.order.customer.username", is("BobPancakes123")))
-        .andExpect(jsonPath("$.order.customer.phone", is("919191919")))
-        .andExpect(jsonPath("$.order.customer.password").doesNotExist())
-        .andExpect(jsonPath("$.mgmtOrderId", is(1)))
-        .andExpect(jsonPath("$.order.cart."+w1.getId(), is(5)))
-        .andExpect(jsonPath("$.order.cart."+w2.getId(), is(3)));
+        .andExpect(jsonPath("$.order.orderStatus", is("requested")))
+        .andExpect(jsonPath("$.order.deliveryAddress", is("exampleAddress")))
+        .andExpect(jsonPath("$.order.orderDetails", is("some details")))
+        .andExpect(jsonPath("$.order.phone", is("989898989")))
+        .andExpect(jsonPath("$.customer.name", is("Bob")))
+        .andExpect(jsonPath("$.customer.username", is("BobPancakes123")))
+        .andExpect(jsonPath("$.customer.phone", is("919191919")))
+        .andExpect(jsonPath("$.customer.password").doesNotExist())
+        .andExpect(jsonPath("$.mgmtOrderId", is(123)))
+        .andExpect(jsonPath("$.cart."+w1.getId(), is(5)))
+        .andExpect(jsonPath("$.cart."+w2.getId(), is(3)));
     }
 
     @Test
@@ -257,7 +270,7 @@ public class OrderCreationTests {
         storeServ.saveCustomer(cust2);
 
         configureFor("localhost", 8085);
-        stubFor(post(urlEqualTo("/api/orders")).willReturn(aResponse().withStatus(404)));
+        stubFor(post(urlEqualTo("/api/store/order")).willReturn(aResponse().withStatus(404)));
 
         OrderCreationDTO newOrder4 = new OrderCreationDTO("exampleAddress4", 10.0, 10.0, "some other other other details", "999959999");
         mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token2)

@@ -48,7 +48,7 @@ public class AuthenticationTests {
     void whenRegister_thenSuccessfullAuth() throws IOException, Exception {
         CustomerCreationDTO cust = new CustomerCreationDTO("Bob", "919191919", "BobPancakes", "pancake123");
 
-        mvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust)))
+        mvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust)))
         .andExpect(status().isOk());
 
         // User was saved
@@ -58,9 +58,9 @@ public class AuthenticationTests {
         // Password was not stored in plaintext
         assertNotEquals(cust.getPassword(), found.get(0).getPassword());
 
-        // User can successfully authenticate, recieving a token
+        // User can successfully authentication, recieving a token
         LogInRequestDTO credentials = new LogInRequestDTO(cust.getUsername(), cust.getPassword());
-        MvcResult result = mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(credentials)))
+        MvcResult result = mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(credentials)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").exists())
         .andReturn();
@@ -74,10 +74,10 @@ public class AuthenticationTests {
     }
 
     @Test
-    void whenAuthenticateWithNoCreds_thenUnsuccessfulAuth() throws IOException, Exception {
+    void whenauthenticationWithNoCreds_thenUnsuccessfulAuth() throws IOException, Exception {
         LogInRequestDTO unregisteredCredentials = new LogInRequestDTO("not", "registered");
 
-        mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(unregisteredCredentials)))
+        mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(unregisteredCredentials)))
         .andExpect(status().is(500))
         .andExpect(jsonPath("$.message", is("Bad credentials")));
     }
@@ -87,10 +87,10 @@ public class AuthenticationTests {
         CustomerCreationDTO cust1 = new CustomerCreationDTO("Bob", "919191919", "BobPancakes", "pancake123");
         CustomerCreationDTO cust2 = new CustomerCreationDTO("Rita","929292929","BobPancakes","rita");
 
-        mvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust1)))
+        mvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust1)))
         .andExpect(status().isOk());
 
-        mvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust2)))
+        mvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(cust2)))
         .andExpect(status().is(409));
 
     }

@@ -75,7 +75,7 @@ public class CartMechanismTests {
         Customer cust1 = new Customer("Bob", "919191919", "BobPancakes", "bobby99");
         storeServ.saveCustomer(cust1);
         LogInRequestDTO req1 = new LogInRequestDTO("BobPancakes", "bobby99");
-        MvcResult result1 = mvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req1))).andReturn();
+        MvcResult result1 = mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req1))).andReturn();
         JSONObject tokenJSON1 = new JSONObject(result1.getResponse().getContentAsString());
         token1 = tokenJSON1.getString("token");
     }

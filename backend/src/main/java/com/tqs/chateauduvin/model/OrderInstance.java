@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,14 +32,17 @@ public class OrderInstance {
     @ElementCollection
     private Map<Long, Integer> cart;
 
+    @Column(name = "delivery_time")
+    private Long mgmtOrderId;
 
     public OrderInstance() {
     }
 
-    public OrderInstance(Order order, Customer customer, Map<Long,Integer> cart) {
+    public OrderInstance(Order order, Customer customer, Map<Long,Integer> cart, Long mgmtOrderId) {
         this.order = order;
         this.customer = customer;
         this.cart = cart;
+        this.mgmtOrderId = mgmtOrderId;
     }
 
     public long getId() {
@@ -71,6 +75,14 @@ public class OrderInstance {
 
     public void setCart(Map<Long,Integer> cart) {
         this.cart = cart;
+    }
+
+    public Long getMgmtOrderId() {
+        return this.mgmtOrderId;
+    }
+
+    public void setMgmtOrderId(Long mgmtOrderId) {
+        this.mgmtOrderId = mgmtOrderId;
     }
 
     @Override

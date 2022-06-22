@@ -41,6 +41,12 @@ public class StoreService implements UserDetailsService {
     @Value("${ti.url}")
     public String URL;
 
+    @Value("${ti.username}")
+    private String username;
+
+    @Value("${ti.password}")
+    private String password;
+
     private HttpRequests httpRequests = new HttpRequests();
 
     public Long storeId;
@@ -155,7 +161,7 @@ public class StoreService implements UserDetailsService {
             return wineRep.findByPriceBetweenAndAlcoholBetweenAndTypesContaining(minPrice, maxPrice, minAlc, maxAlc, type, pageable);
     }
 
-    public Map<String,Object> newOrder(Customer customer, OrderCreationDTO orderDTO) throws Exception {
+    public OrderInstance newOrder(Customer customer, OrderCreationDTO orderDTO) throws Exception {
         Map<Long, Integer> custCart = customer.getCart();
         if(custCart.isEmpty()) throw new NoSuchElementException();
         for(Long wineId : custCart.keySet()) {
@@ -178,25 +184,20 @@ public class StoreService implements UserDetailsService {
             }
         }
         Order order = orderDTO.toOrderEntity();
-        if(storeId == null) {
-            storeId = registerShop();
-        }
-        order.setStoreId(storeId);
         Map<Long, Integer> orderCart = new HashMap<>(custCart);
-        OrderInstance orderInst = new OrderInstance(order, customer, orderCart);
-        Long orderId = httpRequests.sendNewOrder(URL, order);
+        Order mgmtOrder = httpRequests.sendNewOrder(URL, order, username, password);
+        Long mgmtId = mgmtOrder.getId();
+        mgmtOrder.setId(order.getId());
+        OrderInstance orderInst = new OrderInstance(mgmtOrder, customer, orderCart, mgmtId);
         orderInstanceRep.save(orderInst);
         customer.setCart(new HashMap<>());
         customerRep.save(customer);
-        Map<String, Object> ret = new HashMap<>();
-        ret.put("order", orderInst);
-        ret.put("mgmtOrderId", orderId);
-        return ret;
+        return orderInst;
     }
 
-    private Long registerShop() throws Exception {
-        return httpRequests.registerCDV(URL);
-    }
+    // private Long registerShop() throws Exception {
+    //     return httpRequests.registerCDV(URL);
+    // }
 
     public List<OrderDTO> getCustomerOrders(Customer customer) {
         List<OrderInstance> found = orderInstanceRep.findByCustomer(customer);
