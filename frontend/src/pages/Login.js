@@ -144,13 +144,10 @@ function Login() {
         if (allGood) {
 
             const newRegister = {
-                // TODO: phone number in register form
-                // TODO: email in post request
                 "name": regUsername,
                 "username": regUsername,
                 "password": regPassword,
-                "phone": 961234567, // TODO: this is not static
-                "cart": {} // TODO: hmmmm
+                "phone": "961234567" // TODO: this is not static
             }
 
             axios.post(process.env.REACT_APP_BACKEND_URL + registerEndpoint, newRegister, {headers:{"Access-Control-Allow-Origin": "*"}})
