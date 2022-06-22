@@ -19,14 +19,13 @@ function GeneralNavbar() {
     return <>
         <nav className="navMenu">
             <a href="/">Home</a>
-            <a href="/stores">Stores</a>
             {cookies.logged_user != undefined && cookies.logged_user != "" ?
                 <a href="/account">Account</a>
                 :
                 <></>
             }
             {cookies.logged_user != undefined && cookies.logged_user != "" ?
-                <a href="#" onClick={() => {Logout()}}>Logout</a>
+                <a href="" onClick={() => {Logout()}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logout</a>
                 :
                 <a href="/login">Login</a>
             }

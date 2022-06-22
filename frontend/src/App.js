@@ -15,6 +15,7 @@ import ChooseStore from './pages/ChooseStore';
 import StoreInfo from './pages/StoreInfo';
 import StoreProducts from './pages/StoreProducts';
 import Login from './pages/Login';
+import Cart from './pages/Cart';
 // cookies
 import { useCookies } from 'react-cookie';
 
@@ -56,11 +57,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Homepage />}></Route>
-        <Route path="/stores" element={<Stores />}></Route>
         <Route path="/account" element={loggedIn() ? <Account /> : <Navigate to="/login" />}></Route>
-        <Route path="/choose_store" element={loggedIn() ? <ChooseStore /> : <Navigate to="/login" />}></Route>
-        <Route path="/store/:id/products" element={loggedIn() ? <StoreProducts /> : <Navigate to="/login" />}></Route>
-        <Route path="/store/:id/info" element={<StoreInfo />}></Route>
+        <Route path="/store/products" element={loggedIn() ? <StoreProducts /> : <Navigate to="/login" />}></Route>
+        <Route path="/store/info" element={<StoreInfo />}></Route>
+        <Route path="/cart" element={loggedIn() ? <Cart /> : <Navigate to="/login" />}></Route>
         <Route path="/login" element={loggedIn() ? <Navigate to="/account" /> : <Login />}></Route>
       </Routes>
     </BrowserRouter>
