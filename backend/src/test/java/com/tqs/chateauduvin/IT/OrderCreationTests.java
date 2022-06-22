@@ -78,6 +78,8 @@ public class OrderCreationTests {
     Wine w2;
     Wine w3;
 
+    String orderId;
+
     @AfterAll
     public void resetDb() {
         wireMockServer.stop();
@@ -169,7 +171,7 @@ public class OrderCreationTests {
 
         // Bob creates a new order, recieving the proper order instance back
         OrderCreationDTO newOrder = new OrderCreationDTO("exampleAddress", 10.0, 10.0, "some details", "989898989");
-        mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token1)
+        MvcResult result = mvc.perform(post("/api/orders").header("Authorization", "Bearer "+token1)
         .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(newOrder)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.order.orderStatus", is("requested")))
@@ -182,7 +184,10 @@ public class OrderCreationTests {
         .andExpect(jsonPath("$.customer.password").doesNotExist())
         .andExpect(jsonPath("$.mgmtOrderId", is(123)))
         .andExpect(jsonPath("$.cart."+w1.getId(), is(5)))
-        .andExpect(jsonPath("$.cart."+w2.getId(), is(3)));
+        .andExpect(jsonPath("$.cart."+w2.getId(), is(3)))
+        .andReturn();
+        JSONObject obj = new JSONObject(result.getResponse().getContentAsString());
+        orderId = obj.getString("id");
     }
 
     @Test
@@ -257,7 +262,7 @@ public class OrderCreationTests {
 
         stubFor(get(urlEqualTo("/api/store/order/123")).willReturn(aResponse().withStatus(200).withBody(orderBody)));
 
-        mvc.perform(get("/api/orders/1").header("Authorization", "Bearer "+token1))
+        mvc.perform(get("/api/orders/"+orderId).header("Authorization", "Bearer "+token1))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.order.id", is(1)));
     }
@@ -265,7 +270,7 @@ public class OrderCreationTests {
     @Test
     @Order(7)
     void whenGettingOtherUsersOrder_Unauthorized() throws Exception {
-        mvc.perform(get("/api/orders/2").header("Authorization", "Bearer "+token1))
+        mvc.perform(get("/api/orders/"+orderId).header("Authorization", "Bearer "+token1))
         .andExpect(status().isUnauthorized());
     }
 
