@@ -40,13 +40,6 @@ public class StoreController {
     @Autowired
     private TokenProvider jwtTokenUtil;
 
-    // @GetMapping("/test")
-    // public ResponseEntity<?> test() throws IOException, InterruptedException, ParseException {
-    //     Order order = new Order("A", "B", null, LocalDateTime.now(), null, null, null, null, "C", null);
-    //     httpRequests.sendNewOrder(order);
-    //     return ResponseEntity.ok().build();
-    // }
-
     // Orders
 
     @PostMapping("/orders")
@@ -73,14 +66,14 @@ public class StoreController {
     }
 
     @GetMapping("/orders/{orderid}")
-    public ResponseEntity<OrderDTO> getOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
+    public ResponseEntity<Map<String,Object>> updateOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) throws Exception {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
         Customer customer = storeServ.getCustomerByUsername(username);
         try{ 
             OrderInstance order = storeServ.getCustomerOrder(customer, orderid);
-            OrderDTO orderDTO = OrderDTO.fromOrderInstanceEntity(order);
-            return ResponseEntity.ok().body(orderDTO);
+            Map<String,Object> updatedOrder = storeServ.updateOrder(order);
+            return ResponseEntity.ok().body(updatedOrder);
         } catch(NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch(SecurityException e) {

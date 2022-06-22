@@ -218,4 +218,14 @@ public class StoreService implements UserDetailsService {
         else throw new NoSuchElementException();
     }
 
+    public Map<String,Object> updateOrder(OrderInstance order) throws Exception {
+        Map<String,Object> response = httpRequests.getOrderById(URL, order.getMgmtOrderId(), username, password);
+        Order mgmtOrder = (Order) response.get("order");
+        mgmtOrder.setId(order.getOrder().getId());
+        order.setOrder(mgmtOrder);
+        OrderInstance updatedOrder = orderInstanceRep.save(order);
+        response.put("order", OrderDTO.fromOrderInstanceEntity(updatedOrder));
+        return response;
+    }
+
 }
