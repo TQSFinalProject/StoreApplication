@@ -20,8 +20,8 @@ import { Form } from 'react-bootstrap';
 // CSS
 import SearchBar from '../components/css/SearchBar.css'
 
-const registerEndpoint = 'register';
-const loginEndpoint = 'authenticate';
+const registerEndpoint = 'registration';
+const loginEndpoint = 'authentication';
 
 // function routeChange(path) { 
 //     navigate(path);

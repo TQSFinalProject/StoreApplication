@@ -16,6 +16,8 @@ import StoreInfo from './pages/StoreInfo';
 import StoreProducts from './pages/StoreProducts';
 import Login from './pages/Login';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+
 // cookies
 import { useCookies } from 'react-cookie';
 
@@ -61,6 +63,7 @@ function App() {
         <Route path="/store/products" element={loggedIn() ? <StoreProducts /> : <Navigate to="/login" />}></Route>
         <Route path="/store/info" element={<StoreInfo />}></Route>
         <Route path="/cart" element={loggedIn() ? <Cart /> : <Navigate to="/login" />}></Route>
+        <Route path="/checkout" element={loggedIn() ? <Checkout /> : <Navigate to="/login" />}></Route>
         <Route path="/login" element={loggedIn() ? <Navigate to="/account" /> : <Login />}></Route>
       </Routes>
     </BrowserRouter>
