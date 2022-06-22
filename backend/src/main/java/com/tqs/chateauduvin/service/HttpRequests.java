@@ -1,6 +1,7 @@
 package com.tqs.chateauduvin.service;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -14,6 +15,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tqs.chateauduvin.dto.LogInRequestDTO;
@@ -36,22 +38,11 @@ public class HttpRequests {
             .POST(BodyPublishers.ofByteArray(JsonUtils.toJson(order)))
             .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        if(response.statusCode() != 200) throw new Exception();
+        if(response.statusCode() != 200) throw new ConnectException();
         else {
-            ObjectMapper mapper = new ObjectMapper();
             try {
                 JSONObject obj = (JSONObject) new JSONParser().parse(response.body());
-                LocalDateTime estimatedDeliveryTime = obj.get(estDelTime) == null ? null : LocalDateTime.parse((String)obj.remove(estDelTime));
-                LocalDateTime deliveryTime = obj.get(delTime) == null ? null : LocalDateTime.parse((String)obj.remove(delTime));
-                LocalDateTime submitedTime = LocalDateTime.parse((String)obj.remove("submitedTime"));
-                if(deliveryTime == null) obj.remove(delTime);
-                if(estimatedDeliveryTime == null) obj.remove(estDelTime);
-                OrderIntermediaryDTO tempOrder = mapper.readValue(obj.toJSONString(), OrderIntermediaryDTO.class);
-                Order orderResponse = tempOrder.toOrderEntity();
-                orderResponse.setEstimatedDeliveryTime(estimatedDeliveryTime);
-                orderResponse.setDeliveryTime(deliveryTime);
-                orderResponse.setSubmitedTime(submitedTime);
-                return orderResponse;
+                return getOrderFromJSONObject(obj);
             } catch (JsonGenerationException e) {
                 throw e;
             } catch (JsonMappingException e) {
@@ -71,23 +62,12 @@ public class HttpRequests {
             .GET()
             .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        if(response.statusCode() != 200) throw new Exception();
+        if(response.statusCode() != 200) throw new ConnectException();
         else {
-            System.out.println(response.body());
-            ObjectMapper mapper = new ObjectMapper();
             try {
                 JSONObject responseJSON = (JSONObject) new JSONParser().parse(response.body());
                 JSONObject obj = (JSONObject) responseJSON.get("order");
-                LocalDateTime estimatedDeliveryTime = obj.get(estDelTime) == null ? null : LocalDateTime.parse((String)obj.remove(estDelTime));
-                LocalDateTime deliveryTime = obj.get(delTime) == null ? null : LocalDateTime.parse((String)obj.remove(delTime));
-                LocalDateTime submitedTime = LocalDateTime.parse((String)obj.remove("submitedTime"));
-                if(deliveryTime == null) obj.remove(delTime);
-                if(estimatedDeliveryTime == null) obj.remove(estDelTime);
-                OrderIntermediaryDTO tempOrder = mapper.readValue(obj.toJSONString(), OrderIntermediaryDTO.class);
-                Order orderResponse = tempOrder.toOrderEntity();
-                orderResponse.setEstimatedDeliveryTime(estimatedDeliveryTime);
-                orderResponse.setDeliveryTime(deliveryTime);
-                orderResponse.setSubmitedTime(submitedTime);
+                Order orderResponse = getOrderFromJSONObject(obj);
                 JSONObject rider = (JSONObject) responseJSON.get("rider");
                 Map<String,Object> ret = new HashMap<>();
                 ret.put("order", orderResponse);
@@ -123,6 +103,21 @@ public class HttpRequests {
             String token = (String) obj.get("token");
             return token;
         }
-        else throw new Exception();
+        else throw new ConnectException();
+    }
+
+    public Order getOrderFromJSONObject(JSONObject obj) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        LocalDateTime estimatedDeliveryTime = obj.get(estDelTime) == null ? null : LocalDateTime.parse((String)obj.remove(estDelTime));
+        LocalDateTime deliveryTime = obj.get(delTime) == null ? null : LocalDateTime.parse((String)obj.remove(delTime));
+        LocalDateTime submitedTime = LocalDateTime.parse((String)obj.remove("submitedTime"));
+        if(deliveryTime == null) obj.remove(delTime);
+        if(estimatedDeliveryTime == null) obj.remove(estDelTime);
+        OrderIntermediaryDTO tempOrder = mapper.readValue(obj.toJSONString(), OrderIntermediaryDTO.class);
+        Order orderResponse = tempOrder.toOrderEntity();
+        orderResponse.setEstimatedDeliveryTime(estimatedDeliveryTime);
+        orderResponse.setDeliveryTime(deliveryTime);
+        orderResponse.setSubmitedTime(submitedTime);
+        return orderResponse;
     }
 }
