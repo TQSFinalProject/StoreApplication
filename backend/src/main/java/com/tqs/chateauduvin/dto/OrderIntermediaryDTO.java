@@ -14,7 +14,9 @@ public class OrderIntermediaryDTO {
     public String phone;
     public Double rating;
 
-    public OrderIntermediaryDTO() {}
+    public OrderIntermediaryDTO() {
+        // Empty constructor for jackson serialization
+    }
 
     public Order toOrderEntity() {
         return new Order(id, orderStatus, deliveryAddress, deliveryLat, deliveryLong, null, null, null, riderId, storeId, orderDetails, phone, rating);
