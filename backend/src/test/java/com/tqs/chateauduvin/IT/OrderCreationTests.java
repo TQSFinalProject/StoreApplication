@@ -264,13 +264,13 @@ public class OrderCreationTests {
 
         mvc.perform(get("/api/orders/"+orderId).header("Authorization", "Bearer "+token1))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.order.id", is(1)));
+        .andExpect(jsonPath("$.order.id", is(Integer.parseInt(orderId))));
     }
 
     @Test
     @Order(7)
     void whenGettingOtherUsersOrder_Unauthorized() throws Exception {
-        mvc.perform(get("/api/orders/"+orderId).header("Authorization", "Bearer "+token1))
+        mvc.perform(get("/api/orders/"+orderId).header("Authorization", "Bearer "+token2))
         .andExpect(status().isUnauthorized());
     }
 
