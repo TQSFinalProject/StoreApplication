@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 // Bootstrap
 import Container from 'react-bootstrap/Container'
@@ -23,7 +24,6 @@ import { products } from "../App"
 // FA
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { useNavigate } from 'react-router-dom';
 
 // axios
 import axios from "axios";
@@ -39,16 +39,33 @@ function valuetextAlcohol(value) {
   return `${value}%`;
 }
 
+export function typeToColor(type) {
+  let colorMap = {
+    "red": "DarkRed",
+    "white": "Khaki",
+    "rose": "LightCoral",
+    "sparkling": "LightBlue",
+    "dry": "YellowGreen"
+  }
+
+  return colorMap[type]
+}
+
+export function getWineTypes(typesString) {
+  const typesArray = typesString.split(";");
+  return typesArray;
+}
+
 function StoreProducts() {
 
   const [wines, setWines] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [cookies, setCookie] = useCookies(['logged_user', 'token']);
+  let headers = { "headers": { "Authorization": "Bearer " + cookies.token } };
 
   let navigate = useNavigate();
 
   useEffect(() => {
-    let headers = { "headers": { "Authorization": "Bearer " + cookies.token } };
     axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_wines, headers).then((response) => {
       setWines(response.data.content);
       setTotalPages(response.data.totalPages);
@@ -93,21 +110,14 @@ function StoreProducts() {
     setValueAlcohol(newValue);
   };
 
-  function typeToColor(type) {
-    let colorMap = {
-      "red": "DarkRed",
-      "white": "Khaki",
-      "rose": "LightCoral",
-      "sparkling": "LightBlue",
-      "dry": "YellowGreen"
-    }
+  function handleCallback(page) {
 
-    return colorMap[type]
-  }
+    let url = process.env.REACT_APP_BACKEND_URL + endpoint_wines + "?page=" + (page - 1);
 
-  function getWineTypes(typesString) {
-    const typesArray = typesString.split(";");
-    return typesArray;
+    axios.get(url, headers).then((response) => {
+      setWines(response.data.content);
+    });
+
   }
 
   function addWineToCart(wineId) {
@@ -116,19 +126,11 @@ function StoreProducts() {
 
     axios.put(url, {}, headers)
       .then((response) => {
-        // console.log(response);
+        console.log(response)
       });
   }
 
-  function handleCallback(page) {
-
-    let url = process.env.REACT_APP_BACKEND_URL + endpoint_wines + "?page=" + (page-1);
-
-    axios.get(url).then((response) => {
-      setWines(response.data.content);
-    });
-    
-  }
+  console.log(wines)
 
   return (
     <>

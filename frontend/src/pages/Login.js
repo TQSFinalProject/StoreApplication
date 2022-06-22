@@ -20,8 +20,8 @@ import { Form } from 'react-bootstrap';
 // CSS
 import SearchBar from '../components/css/SearchBar.css'
 
-const registerEndpoint = 'register';
-const loginEndpoint = 'authenticate';
+const registerEndpoint = 'registration';
+const loginEndpoint = 'authentication';
 
 // function routeChange(path) { 
 //     navigate(path);
@@ -144,13 +144,10 @@ function Login() {
         if (allGood) {
 
             const newRegister = {
-                // TODO: phone number in register form
-                // TODO: email in post request
                 "name": regUsername,
                 "username": regUsername,
                 "password": regPassword,
-                "phone": 961234567, // TODO: this is not static
-                "cart": {} // TODO: hmmmm
+                "phone": "961234567" // TODO: this is not static
             }
 
             axios.post(process.env.REACT_APP_BACKEND_URL + registerEndpoint, newRegister, {headers:{"Access-Control-Allow-Origin": "*"}})
