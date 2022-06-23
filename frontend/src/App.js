@@ -17,6 +17,8 @@ import StoreProducts from './pages/StoreProducts';
 import Login from './pages/Login';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import FollowOrder from './pages/FollowOrder';
+import OrderHistory from './pages/OrderHistory';
 
 // cookies
 import { useCookies } from 'react-cookie';
@@ -64,6 +66,8 @@ function App() {
         <Route path="/store/info" element={<StoreInfo />}></Route>
         <Route path="/cart" element={loggedIn() ? <Cart /> : <Navigate to="/login" />}></Route>
         <Route path="/checkout" element={loggedIn() ? <Checkout /> : <Navigate to="/login" />}></Route>
+        <Route path="/follow_order/:orderId" element={loggedIn() ? <FollowOrder /> : <Navigate to="/login" />}></Route>
+        <Route path="/order_history" element={loggedIn() ? <OrderHistory /> : <Navigate to="/login" />}></Route>
         <Route path="/login" element={loggedIn() ? <Navigate to="/account" /> : <Login />}></Route>
       </Routes>
     </BrowserRouter>

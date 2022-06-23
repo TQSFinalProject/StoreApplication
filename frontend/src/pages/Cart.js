@@ -76,12 +76,12 @@ function Cart() {
                                 :
                                 cartWines.map((callbackfn, idx) => (
 
-                                    <Row className="align-items-center">
+                                    <Row className="align-items-center" key={"product_key" + cartWines[idx].id}>
                                         <Col style={{ display: 'flex', justifyContent: 'center' }}>
                                             <h1>{cart[cartWines[idx].id]}x</h1>
                                         </Col>
                                         <Col>
-                                            <Toast key={"product_key" + cartWines[idx].id} style={{ margin: '1%', width: '30vw' }} className="employeeCard">
+                                            <Toast style={{ margin: '1%', width: '30vw' }} className="employeeCard">
                                                 <Toast.Header closeButton={false}>
                                                     <Container>
                                                         <Row>
