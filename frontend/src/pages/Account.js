@@ -49,7 +49,7 @@ function Account() {
             <Container style={{ marginTop: '2%' }}>
                 <Row>
                     <Col sm={4}>
-                        <Link to="/choose_store">
+                        <Link to="/">
                             <FontAwesomeIcon icon={faArrowLeft} style={{ fontSize: '30px', textDecoration: 'none', color: '#06113C' }} />
                         </Link>
                     </Col>
@@ -69,7 +69,7 @@ function Account() {
                                 </Col>
                             </Row>
                             <Row className="d-flex justify-content-center">
-                                <Link to='/' style={{ marginTop: '5%', width: '20%' }}>
+                                <Link to='/order_history' style={{ marginTop: '5%', width: '20%' }}>
                                     <Button>Your orders</Button>
                                 </Link>
                             </Row>
