@@ -45,10 +45,11 @@ function Checkout() {
     const [cookies, setCookie] = useCookies(['logged_user', 'token']);
 
     let headers = { "headers": { "Authorization": "Bearer " + cookies.token } };
+    let navigate = useNavigate();
 
     function validateOrderForm() {
         const validAddress = deliveryAddress.length > 15;
-        const validPhone = onlyNumbers(phoneNumber) && phoneNumber.length==9 && phoneNumber[0]=="9";
+        const validPhone = onlyNumbers(phoneNumber) && phoneNumber.length == 9 && phoneNumber[0] == "9";
         return [validAddress, validPhone];
     }
 
@@ -76,17 +77,20 @@ function Checkout() {
                 "phone": phoneNumber
             }
 
-            console.log(order);
-    
             let url = process.env.REACT_APP_BACKEND_URL + endpoint_orders;
-    
+
             axios.post(url, order, headers)
                 .then((response) => {
-                    console.log(response)
+                    console.log(response);
+                    if (response.status == 200) {
+                        let orderId = response.data.id;
+                        navigate('/follow_order/' + orderId);
+                    }
+                }).catch(function (error) {
+                    alert("Oops! Something went wrong with your order. Please try again!")
+                    navigate('/store/products');
                 });
-
         }
-
     }
 
     return (

@@ -67,6 +67,7 @@ function StoreProducts() {
 
   useEffect(() => {
     axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_wines, headers).then((response) => {
+      // console.log(response.data.content);
       setWines(response.data.content);
       setTotalPages(response.data.totalPages);
     });
@@ -129,8 +130,6 @@ function StoreProducts() {
         console.log(response)
       });
   }
-
-  console.log(wines)
 
   return (
     <>
@@ -205,39 +204,41 @@ function StoreProducts() {
             <Row className="d-flex justify-content-center">
 
               {wines.map((callbackfn, idx) => (
+                  wines[idx].stock != 0 ?
 
-                <Toast key={"product_key" + wines[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
-                  <Toast.Header closeButton={false}>
-                    <Container>
-                      <Row>
-                        <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                          <strong className="me-auto">{wines[idx].name} </strong>
-                        </Col>
-                        <Col style={{ display: 'flex', justifyContent: 'right' }}>
-                          {getWineTypes(wines[idx].types).map((callbackfn, idx2) => (
-                            <span key={"product_type_key" + idx2} className="badge" style={{ backgroundColor: typeToColor(getWineTypes(wines[idx].types)[idx2]), margin: "1%" }}>{getWineTypes(wines[idx].types)[idx2]}</span>
-                          ))}
-                        </Col>
-                      </Row>
-                    </Container>
-                  </Toast.Header>
-                  <Toast.Body>
-                    <Container>
-                      <Row>
-                        <Col className='align-self-center col-xs-1' align='center'>
-                          {"Alcohol: " + wines[idx].alcohol + "%"}<br />
-                          {"Price: " + wines[idx].price + "£"}
-                        </Col>
-                        <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                          <img src={wines[idx].img} className="rounded mr-2" alt="Product Pic" style={{ height: '50px' }}></img>                                                </Col>
-                        <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                          <Button onClick={() => { addWineToCart(wines[idx].id) }}><FontAwesomeIcon icon={faPlus} /></Button>
-                        </Col>
-                      </Row>
-                    </Container>
-                  </Toast.Body>
-                </Toast>
-
+                    <Toast key={"product_key" + wines[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
+                      <Toast.Header closeButton={false}>
+                        <Container>
+                          <Row>
+                            <Col style={{ display: 'flex', justifyContent: 'left' }}>
+                              <strong className="me-auto">{wines[idx].name} </strong>
+                            </Col>
+                            <Col style={{ display: 'flex', justifyContent: 'right' }}>
+                              {getWineTypes(wines[idx].types).map((callbackfn, idx2) => (
+                                <span key={"product_type_key" + idx2} className="badge" style={{ backgroundColor: typeToColor(getWineTypes(wines[idx].types)[idx2]), margin: "1%" }}>{getWineTypes(wines[idx].types)[idx2]}</span>
+                              ))}
+                            </Col>
+                          </Row>
+                        </Container>
+                      </Toast.Header>
+                      <Toast.Body>
+                        <Container>
+                          <Row>
+                            <Col className='align-self-center col-xs-1' align='center'>
+                              {"Alcohol: " + wines[idx].alcohol + "%"}<br />
+                              {"Price: " + wines[idx].price + "£"}
+                            </Col>
+                            <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
+                              <img src={wines[idx].img} className="rounded mr-2" alt="Product Pic" style={{ height: '50px' }}></img>                                                </Col>
+                            <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
+                              <Button onClick={() => { addWineToCart(wines[idx].id) }}><FontAwesomeIcon icon={faPlus} /></Button>
+                            </Col>
+                          </Row>
+                        </Container>
+                      </Toast.Body>
+                    </Toast>
+                    :
+                    <></>
               ))}
 
             </Row>
