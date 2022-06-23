@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 // Bootstrap
 import Container from 'react-bootstrap/Container'
@@ -14,6 +16,7 @@ import Typography from '@mui/material/Typography';
 
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
+import Pagination from '../components/Pagination';
 
 // Product Data
 import { products } from "../App"
@@ -21,7 +24,12 @@ import { products } from "../App"
 // FA
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { useNavigate } from 'react-router-dom';
+
+// axios
+import axios from "axios";
+
+const endpoint_wines = "api/wines";
+const endpoint_cart = "api/cart/"
 
 function valuetextPrice(value) {
   return `${value}£`;
@@ -31,42 +39,68 @@ function valuetextAlcohol(value) {
   return `${value}%`;
 }
 
+export function typeToColor(type) {
+  let colorMap = {
+    "red": "DarkRed",
+    "white": "Khaki",
+    "rose": "LightCoral",
+    "sparkling": "LightBlue",
+    "dry": "YellowGreen"
+  }
+
+  return colorMap[type]
+}
+
+export function getWineTypes(typesString) {
+  const typesArray = typesString.split(";");
+  return typesArray;
+}
+
 function StoreProducts() {
 
+  const [wines, setWines] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [cookies, setCookie] = useCookies(['logged_user', 'token']);
+  let headers = { "headers": { "Authorization": "Bearer " + cookies.token } };
+
   let navigate = useNavigate();
-  let local_products = [...products]
-  let minPrice = Math.min(...local_products.map(o => o.price))
-  let maxPrice = Math.max(...local_products.map(o => o.price))
+
+  useEffect(() => {
+    axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_wines, headers).then((response) => {
+      setWines(response.data.content);
+      setTotalPages(response.data.totalPages);
+    });
+
+  }, []);
+
+  let minPrice = Math.min(...wines.map(o => o.price))
+  let maxPrice = Math.max(...wines.map(o => o.price))
   let marksPrice = [
     {
       "value": minPrice,
-      "label": minPrice+"£"
+      "label": minPrice + "£"
     },
     {
       "value": maxPrice,
-      "label": maxPrice+"£"
+      "label": maxPrice + "£"
     }
   ]
 
-  let minAlcohol = Math.min(...local_products.map(o => o.alcohol))
-  let maxAlcohol = Math.max(...local_products.map(o => o.alcohol))
+  let minAlcohol = Math.min(...wines.map(o => o.alcohol))
+  let maxAlcohol = Math.max(...wines.map(o => o.alcohol))
   let marksAlcohol = [
     {
       "value": minAlcohol,
-      "label": minAlcohol+"%"
+      "label": minAlcohol + "%"
     },
     {
       "value": maxAlcohol,
-      "label": maxAlcohol+"%"
+      "label": maxAlcohol + "%"
     }
   ]
 
-  function redirectCartPage() {
-    navigate('/cart/')
-  }
-
-  const [valuePrice,setValuePrice] = React.useState([minPrice,maxPrice]);
-  const [valueAlcohol, setValueAlcohol] = React.useState([minAlcohol,maxAlcohol]);
+  const [valuePrice, setValuePrice] = React.useState([minPrice, maxPrice]);
+  const [valueAlcohol, setValueAlcohol] = React.useState([minAlcohol, maxAlcohol]);
 
   const handleChangePrice = (event, newValue) => {
     setValuePrice(newValue);
@@ -76,34 +110,27 @@ function StoreProducts() {
     setValueAlcohol(newValue);
   };
 
-  function checkBoxFoolery() {
+  function handleCallback(page) {
 
-    let local_staff = [...products]
+    let url = process.env.REACT_APP_BACKEND_URL + endpoint_wines + "?page=" + (page - 1);
 
-    let r = document.getElementById('checkboxR').checked == true
-    let w = document.getElementById('checkboxW').checked == true
-    let rose = document.getElementById('checkboxRose').checked == true
-    let s = document.getElementById('checkboxS').checked == true
-
-
-    // else {
-    //     local_staff = [...staff]
-    // }
+    axios.get(url, headers).then((response) => {
+      setWines(response.data.content);
+    });
 
   }
 
-  function typeToColor(type) {
-    let colorMap = {
-      "red": "DarkRed",
-      "white": "Khaki",
-      "rose": "LightCoral",
-      "sparkling": "LightBlue",
-      "dry": "YellowGreen"
-    }
+  function addWineToCart(wineId) {
+    let url = process.env.REACT_APP_BACKEND_URL + endpoint_cart + wineId;
+    let headers = { "headers": { "Authorization": "Bearer " + cookies.token } };
 
-    return colorMap[type]
+    axios.put(url, {}, headers)
+      .then((response) => {
+        console.log(response)
+      });
   }
 
+  console.log(wines)
 
   return (
     <>
@@ -156,19 +183,19 @@ function StoreProducts() {
             <div className='checkboxGroup' style={{ verticalAlign: 'middle', marginTop: '3%' }}>
               <p>Wine Type:</p>
               <label className="container">
-                <input id='checkboxR' type="checkbox" onChange={checkBoxFoolery} />
+                <input id='checkboxR' type="checkbox" />
                 &nbsp; Red
               </label>
               <label className="container">
-                <input id='checkboxW' type="checkbox" onChange={checkBoxFoolery} />
+                <input id='checkboxW' type="checkbox" />
                 &nbsp; White
               </label>
               <label className="container">
-                <input id='checkboxRose' type="checkbox" onChange={checkBoxFoolery} />
+                <input id='checkboxRose' type="checkbox" />
                 &nbsp; Rose
               </label>
               <label className="container">
-                <input id='checkboxS' type="checkbox" onChange={checkBoxFoolery} />
+                <input id='checkboxS' type="checkbox" />
                 &nbsp; Sparkling
               </label>
             </div>
@@ -176,17 +203,19 @@ function StoreProducts() {
           </Col>
           <Col sm={8}>
             <Row className="d-flex justify-content-center">
-              {local_products.map((callbackfn, idx) => (
-                <Toast key={"key" + local_products[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
+
+              {wines.map((callbackfn, idx) => (
+
+                <Toast key={"product_key" + wines[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
                   <Toast.Header closeButton={false}>
                     <Container>
                       <Row>
                         <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                          <strong className="me-auto">{local_products[idx].name} </strong>
+                          <strong className="me-auto">{wines[idx].name} </strong>
                         </Col>
                         <Col style={{ display: 'flex', justifyContent: 'right' }}>
-                          {local_products[idx].types.map((callbackfn, idx2) => (
-                            <span class="badge" style={{ backgroundColor: typeToColor(local_products[idx].types[idx2]), margin: "1%" }}>{local_products[idx].types[idx2]}</span>
+                          {getWineTypes(wines[idx].types).map((callbackfn, idx2) => (
+                            <span key={"product_type_key" + idx2} className="badge" style={{ backgroundColor: typeToColor(getWineTypes(wines[idx].types)[idx2]), margin: "1%" }}>{getWineTypes(wines[idx].types)[idx2]}</span>
                           ))}
                         </Col>
                       </Row>
@@ -196,24 +225,28 @@ function StoreProducts() {
                     <Container>
                       <Row>
                         <Col className='align-self-center col-xs-1' align='center'>
-                          {"Alcohol: " + local_products[idx].alcohol + "%"}<br />
-                          {"Price: " + local_products[idx].alcohol + "£"}
-
+                          {"Alcohol: " + wines[idx].alcohol + "%"}<br />
+                          {"Price: " + wines[idx].price + "£"}
                         </Col>
                         <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                          <img src={local_products[idx].img} className="rounded mr-2" alt="Product Pic" style={{ height: '50px' }}></img>                                                </Col>
+                          <img src={wines[idx].img} className="rounded mr-2" alt="Product Pic" style={{ height: '50px' }}></img>                                                </Col>
                         <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                          <Button onClick={() => { }}><FontAwesomeIcon icon={faPlus} /></Button>
+                          <Button onClick={() => { addWineToCart(wines[idx].id) }}><FontAwesomeIcon icon={faPlus} /></Button>
                         </Col>
                       </Row>
                     </Container>
                   </Toast.Body>
                 </Toast>
+
               ))}
+
+            </Row>
+            <Row className="d-flex justify-content-center">
+              <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
             </Row>
             <Row>
               <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                <Button size="lg" onClick={() => { redirectCartPage() }}>Go To Cart</Button>
+                <Button size="lg" onClick={() => { navigate('/cart') }}>Go To Cart</Button>
               </Col>
             </Row>
           </Col>

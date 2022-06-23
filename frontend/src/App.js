@@ -1,6 +1,6 @@
 // React
 import React from 'react';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 // Pages
@@ -15,6 +15,11 @@ import ChooseStore from './pages/ChooseStore';
 import StoreInfo from './pages/StoreInfo';
 import StoreProducts from './pages/StoreProducts';
 import Login from './pages/Login';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+
+// cookies
+import { useCookies } from 'react-cookie';
 
 export let staff = [
   { id: 1, name: "Afonso Campos", rating: 5, img: 'https://cdn-icons-png.flaticon.com/512/147/147144.png', time: 10, workZone: 'A' },
@@ -32,27 +37,34 @@ export let staff = [
 let wine_img = "https://www.creativefabrica.com/wp-content/uploads/2019/08/Bottle-of-wine-580x386.jpg"
 
 export let products = [
-  { id: 1, name: "Wine 1", types: ["red"], img: wine_img, price: 19.99, alcohol: 13, available: true},
-  { id: 2, name: "Wine 2", types: ["red"], img: wine_img, price: 15.99, alcohol: 11, available: true},
-  { id: 3, name: "Wine 3", types: ["dry"], img: wine_img, price: 17.99, alcohol: 12, available: true},
-  { id: 4, name: "Wine 4", types: ["rose"], img: wine_img, price: 10.99, alcohol: 12.5, available: false},
-  { id: 5, name: "Wine 5", types: ["sparkling", "rose"], img: wine_img, price: 9.99, alcohol: 13.5, available: true},
-  { id: 6, name: "Wine 6", types: ["rose"], img: wine_img, price: 20.99, alcohol: 9, available: true},
-  { id: 7, name: "Wine 7", types: ["white", "sparkling"], img: wine_img, price: 11.99, alcohol: 10.5, available: true},
-  { id: 8, name: "Wine 8", types: ["red"], img: wine_img, price: 13.99, alcohol: 12.5, available: true}
+  { id: 1, name: "Wine 1", types: ["red"], img: wine_img, price: 19.99, alcohol: 13, available: true },
+  { id: 2, name: "Wine 2", types: ["red"], img: wine_img, price: 15.99, alcohol: 11, available: true },
+  { id: 3, name: "Wine 3", types: ["dry"], img: wine_img, price: 17.99, alcohol: 12, available: true },
+  { id: 4, name: "Wine 4", types: ["rose"], img: wine_img, price: 10.99, alcohol: 12.5, available: false },
+  { id: 5, name: "Wine 5", types: ["sparkling", "rose"], img: wine_img, price: 9.99, alcohol: 13.5, available: true },
+  { id: 6, name: "Wine 6", types: ["rose"], img: wine_img, price: 20.99, alcohol: 9, available: true },
+  { id: 7, name: "Wine 7", types: ["white", "sparkling"], img: wine_img, price: 11.99, alcohol: 10.5, available: true },
+  { id: 8, name: "Wine 8", types: ["red"], img: wine_img, price: 13.99, alcohol: 12.5, available: true }
 ]
 
 function App() {
+
+  const [cookies, setCookie] = useCookies(['logged_user', 'token'])
+
+  function loggedIn() {
+    return (cookies.logged_user != undefined && cookies.logged_user != "");
+  }
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Homepage />}></Route>
-        <Route path="/stores" element={<Stores />}></Route>
-        <Route path="/account" element={<Account />}></Route>
-        <Route path="/choose_store" element={<ChooseStore />}></Route>
-        <Route path="/store/:id/products" element={<StoreProducts />}></Route>
-        <Route path="/store/:id/info" element={<StoreInfo />}></Route>
-        <Route path="/login" element={<Login />}></Route>
+        <Route path="/account" element={loggedIn() ? <Account /> : <Navigate to="/login" />}></Route>
+        <Route path="/store/products" element={loggedIn() ? <StoreProducts /> : <Navigate to="/login" />}></Route>
+        <Route path="/store/info" element={<StoreInfo />}></Route>
+        <Route path="/cart" element={loggedIn() ? <Cart /> : <Navigate to="/login" />}></Route>
+        <Route path="/checkout" element={loggedIn() ? <Checkout /> : <Navigate to="/login" />}></Route>
+        <Route path="/login" element={loggedIn() ? <Navigate to="/account" /> : <Login />}></Route>
       </Routes>
     </BrowserRouter>
   );

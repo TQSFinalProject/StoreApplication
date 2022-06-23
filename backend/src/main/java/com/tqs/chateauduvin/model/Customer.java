@@ -1,11 +1,13 @@
 package com.tqs.chateauduvin.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,14 +17,14 @@ import javax.persistence.Table;
 @Table(name = "customers")
 public class Customer {
     @Id // The ID will be auto generated
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "phone")
-    private Long phone;
+    private String phone;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
@@ -30,18 +32,19 @@ public class Customer {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ElementCollection
-    private Map<Wine, Integer> cart;
+    @Column(name = "cart", nullable = false)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Map<Long, Integer> cart;
 
     public Customer() {
     }
 
-    public Customer(long id, String name, Long phone, String username, String password) {
-        this.id = id;
+    public Customer(String name, String phone, String username, String password) {
         this.name = name;
         this.phone = phone;
         this.username = username;
         this.password = password;
+        this.cart = new HashMap<>();
     }
 
     public long getId() {
@@ -60,11 +63,11 @@ public class Customer {
         this.name = name;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -82,6 +85,14 @@ public class Customer {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Map<Long,Integer> getCart() {
+        return this.cart;
+    }
+
+    public void setCart(Map<Long, Integer> cart) {
+        this.cart = cart;
     }
 
     @Override

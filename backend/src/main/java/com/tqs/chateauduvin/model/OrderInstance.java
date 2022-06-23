@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +18,7 @@ import javax.persistence.Table;
 @Table(name = "orderInstances") 
 public class OrderInstance {
     @Id //The ID will be auto generated
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -29,17 +30,19 @@ public class OrderInstance {
     private Customer customer;
 
     @ElementCollection
-    private Map<Wine, Integer> cart;
+    private Map<Long, Integer> cart;
 
+    @Column(name = "delivery_time")
+    private Long mgmtOrderId;
 
     public OrderInstance() {
     }
 
-    public OrderInstance(long id, Order order, Customer customer, Map<Wine,Integer> cart) {
-        this.id = id;
+    public OrderInstance(Order order, Customer customer, Map<Long,Integer> cart, Long mgmtOrderId) {
         this.order = order;
         this.customer = customer;
         this.cart = cart;
+        this.mgmtOrderId = mgmtOrderId;
     }
 
     public long getId() {
@@ -66,12 +69,20 @@ public class OrderInstance {
         this.customer = customer;
     }
 
-    public Map<Wine,Integer> getCart() {
+    public Map<Long,Integer> getCart() {
         return this.cart;
     }
 
-    public void setCart(Map<Wine,Integer> cart) {
+    public void setCart(Map<Long,Integer> cart) {
         this.cart = cart;
+    }
+
+    public Long getMgmtOrderId() {
+        return this.mgmtOrderId;
+    }
+
+    public void setMgmtOrderId(Long mgmtOrderId) {
+        this.mgmtOrderId = mgmtOrderId;
     }
 
     @Override

@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams, useNavigate } from "react-router-dom";
+import axios from 'axios'
+import { useCookies } from 'react-cookie';
 
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
@@ -14,7 +16,28 @@ import Button from 'react-bootstrap/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
+const endpoint_profile = "myprofile";
+
 function Account() {
+
+    const [cookies, setCookie] = useCookies(['logged_user', 'token'])
+    
+    const [username, setUsername] = useState("");
+    const [userid, setUserid] = useState(0);
+
+    useEffect(() => {
+
+        let headers = {"headers":{"Authorization": "Bearer " + cookies.token}};
+
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_profile, headers).then((response) => {
+            setUsername(response.data.name);
+            setUserid(response.data.id);
+            console.log(response.data);
+        });
+
+    }, []);
+
+
     return (
         <>
             <GeneralNavbar />
@@ -26,7 +49,7 @@ function Account() {
             <Container style={{ marginTop: '2%' }}>
                 <Row>
                     <Col sm={4}>
-                        <Link to="/choose_store">
+                        <Link to="/">
                             <FontAwesomeIcon icon={faArrowLeft} style={{ fontSize: '30px', textDecoration: 'none', color: '#06113C' }} />
                         </Link>
                     </Col>
@@ -34,10 +57,10 @@ function Account() {
                         <Container className='informationSheet'>
                             <Row>
                                 <Col className='align-self-center'>
-                                    <h3 style={{ marginLeft: '5%' }}>JOHN SMITH</h3>
+                                    <h3 style={{ marginLeft: '5%' }}>{username.toUpperCase()}</h3>
                                     <p style={{ marginLeft: '5%' }}>
-                                        <strong>User ID: </strong>34<br />
-                                        {/* <strong>Name: </strong> John Smith<br /> */}
+                                        <strong>User ID: </strong>{userid}<br />
+                                        {/* TODO: get email from request */}
                                         <strong>E-mail: </strong> john.smith@ua.pt<br />
                                     </p>
                                 </Col>

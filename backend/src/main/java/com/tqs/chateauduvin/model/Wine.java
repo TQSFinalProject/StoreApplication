@@ -1,10 +1,8 @@
 package com.tqs.chateauduvin.model;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +13,7 @@ import javax.persistence.Table;
 @Table(name = "wines")
 public class Wine {
     @Id // The ID will be auto generated
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "name", nullable = false)
@@ -24,21 +22,20 @@ public class Wine {
     @Column(name = "alcohol", nullable = false)
     private Double alcohol;
 
-    @ElementCollection
-    private List<String> types;
+    @Column(name = "types", nullable = false)
+    private String types;
 
     @Column(name = "price", nullable = false)
     private Double price;
 
     @Column(name = "stock", nullable = false)
-    private Long stock;
+    private Integer stock;
 
 
     public Wine() {
     }
 
-    public Wine(long id, String name, Double alcohol, List<String> types, Double price, Long stock) {
-        this.id = id;
+    public Wine(String name, Double alcohol, String types, Double price, Integer stock) {
         this.name = name;
         this.alcohol = alcohol;
         this.types = types;
@@ -70,11 +67,11 @@ public class Wine {
         this.alcohol = alcohol;
     }
 
-    public List<String> getTypes() {
+    public String getTypes() {
         return this.types;
     }
 
-    public void setTypes(List<String> types) {
+    public void setTypes(String types) {
         this.types = types;
     }
 
@@ -86,11 +83,11 @@ public class Wine {
         this.price = price;
     }
 
-    public Long getStock() {
+    public Integer getStock() {
         return this.stock;
     }
 
-    public void setStock(Long stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 
