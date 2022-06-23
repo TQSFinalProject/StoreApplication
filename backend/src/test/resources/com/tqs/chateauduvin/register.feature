@@ -6,4 +6,5 @@ Feature: Use Login system
     And I should fill the Username field with "martim12"
     And I should fill the Password field with "randompass123"
     And I should click on the Submit button
-    Then I should be redirected to the "CHATEAU DU VIN" page
+    Then I should click on the ok button on the alert
+    And I should be redirected to the "CHATEAU DU VIN" page
