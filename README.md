@@ -24,3 +24,5 @@ A specific application wine store that leverages on the management application.
 [Diana Siso](https://github.com/DianaSiso)<br/>
 [Isabel Rosário](https://github.com/rospuye)<br/>
 [Miguel Ferreira](https://github.com/MiguelF07)<br/>
+
+UC: TQS
